@@ -1,0 +1,61 @@
+/* this is a test */
+
+
+.background {
+    -fx-background-color:#4286f4;
+}
+.fishPaste {
+    -fx-background-color: #5041f4;
+}
+.LogInLabels {
+    -fx-font-size: 36px;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Thin'
+}
+
+.borderRadius {
+    -fx-background-radius: 50px;
+    -fx-font-family: 'Raleway Regular';
+}
+
+.LogInPageButtons:hover {
+    -fx-opacity: .2;
+}
+
+.LogInPageButtons {
+    -fx-background-color: #4286f4;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Regular';
+    -fx-font-size: 12pt;
+    -fx-animation: spin 10s linear infinite;
+}
+.errMessages {
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Regular';
+    -fx-font-size: 9pt;
+}
+
+.signUpPageMainLabels {
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Thin';
+    -fx-font-size: 20pt;
+}
+
+.moneyDisplay {
+   
+    -fx-font-family: 'Raleway Thin';
+    -fx-text-fill: white;
+    -fx-font-size: 50pt;
+}
+
+.homePageMainButtons:hover {
+    -fx-background-color: #9286f4;
+
+}
+.homePageMainButtons {
+    -fx-background-color: #4286f4;
+    -fx-background-radius: 0px;
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Regular';
+    -fx-font-size: 15pt;
+}
