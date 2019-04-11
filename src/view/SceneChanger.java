@@ -17,17 +17,17 @@ import java.io.IOException;
  * This class is a scene changing class where upon instantiation, access to the
  * necessary method is gained.
  *
- * @author Kaleb
- * @version 2019-04-08
+ * @author : Kaleb
+ * @version : 2019-04-08
  */
 public class SceneChanger {
 
     /**
      * This method handles all of the scene changes with the different FXML files
      *
-     * @param theEvent
-     * @param theViewName
-     * @param theSceneTitle
+     * @param theEvent      : This is the event that triggers the event change.
+     * @param theViewName   : This is the name of the FXML file to be changed to.
+     * @param theSceneTitle : This is the desired name of the new Scene.
      */
     public void changeScene(ActionEvent theEvent, String theViewName, String theSceneTitle) {
         FXMLLoader loader = new FXMLLoader();

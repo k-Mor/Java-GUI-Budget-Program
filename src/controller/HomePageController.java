@@ -1,3 +1,6 @@
+/*
+ * Multiline comment at the top of the file.
+ */
 package controller;
 
 import java.net.URL;
@@ -6,9 +9,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
 /**
- * FXML controller class
+ * This class is the controller for the HomePage.FXML file.
  *
  * @author : Kaleb
+ * @version : 2019-04-10
  */
 public class HomePageController implements Initializable {
     /**

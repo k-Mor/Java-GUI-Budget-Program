@@ -1,21 +1,32 @@
-/* this is a test */
+/*Header Styles*/
+/*==================================================*/
 
+/*Menu Styles*/
+/*==================================================*/
 
-.background {
+/*Body Styles*/
+/*==================================================*/
+.backgroundPrimary {
     -fx-background-color:#4286f4;
 }
-.fishPaste {
+
+.backgroundSecondary {
     -fx-background-color: #5041f4;
 }
-.LogInLabels {
-    -fx-font-size: 36px;
-    -fx-text-fill: white;
-    -fx-font-family: 'Raleway Thin'
+
+/*Button Styles*/
+/*==================================================*/
+
+.homePageMainButtons:hover {
+    -fx-background-color: #9286f4;
 }
 
-.borderRadius {
-    -fx-background-radius: 50px;
+.homePageMainButtons {
+    -fx-background-color: #4286f4;
+    -fx-background-radius: 0px;
+    -fx-text-fill: white;
     -fx-font-family: 'Raleway Regular';
+    -fx-font-size: 15pt;
 }
 
 .LogInPageButtons:hover {
@@ -29,10 +40,25 @@
     -fx-font-size: 12pt;
     -fx-animation: spin 10s linear infinite;
 }
+
+.borderRadius {
+    -fx-background-radius: 50px;
+    -fx-font-family: 'Raleway Regular';
+}
+
+/*Text Styles*/
+/*==================================================*/
+
 .errMessages {
     -fx-text-fill: white;
     -fx-font-family: 'Raleway Regular';
     -fx-font-size: 9pt;
+}
+
+.moneyDisplay {
+    -fx-font-family: 'Raleway Thin';
+    -fx-text-fill: white;
+    -fx-font-size: 50pt;
 }
 
 .signUpPageMainLabels {
@@ -41,21 +67,12 @@
     -fx-font-size: 20pt;
 }
 
-.moneyDisplay {
-   
-    -fx-font-family: 'Raleway Thin';
+.LogInLabels {
+    -fx-font-size: 36px;
     -fx-text-fill: white;
-    -fx-font-size: 50pt;
+    -fx-font-family: 'Raleway Thin'
 }
 
-.homePageMainButtons:hover {
-    -fx-background-color: #9286f4;
+/*Footer Styles*/
+/*==================================================*/
 
-}
-.homePageMainButtons {
-    -fx-background-color: #4286f4;
-    -fx-background-radius: 0px;
-    -fx-text-fill: white;
-    -fx-font-family: 'Raleway Regular';
-    -fx-font-size: 15pt;
-}
