@@ -39,7 +39,7 @@ public class SignUpController implements Initializable {
     @FXML private TextField myPass;
 
     /**
-     * This is the pasword text field that is used to compare
+     * This is the password text field that is used to compare
      * against the myPass field.
      */
     @FXML private TextField myConfirmPass;
@@ -82,15 +82,29 @@ public class SignUpController implements Initializable {
             // Insert user into the DB
             user.insertUserIntoDB();
 
+            // Play the animations
+            //TODO
+            playTheAnimations();
+
+            // Change the scene
+            changeTheScene(theEvent);
+
         } catch (Exception e) {
             myMessageLabel.setText(e.getMessage());
             new FadeIn(myMessageLabel).play();
         }
 
-        // Play the animations
-        playTheAnimations();
 
-         //Change the scene
+    }
+
+    /**
+     * This method handles the changing of the stage back to
+     * The logInView so that the newly created user can log in.
+     *
+     * @param theEvent : This is the event that was passed.
+     */
+    public void changeTheScene(ActionEvent theEvent) {
+        //Change the scene
         SceneChanger sceneChanger = new SceneChanger();
         sceneChanger.changeScene(theEvent, "LogInView.fxml", "Log In Page");
     }

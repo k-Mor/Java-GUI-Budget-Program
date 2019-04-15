@@ -58,7 +58,7 @@ public class MainDriver extends Application {
     public void start(Stage thePrimaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("LogInView.fxml"));
         thePrimaryStage.setTitle("My App");
-        thePrimaryStage.setScene(new Scene(root, 600, 400));
+        thePrimaryStage.setScene(new Scene(root, 1000, 800));
         thePrimaryStage.show();
 
         // This makes the initial sign in menu animated

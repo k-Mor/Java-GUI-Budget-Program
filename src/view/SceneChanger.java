@@ -38,7 +38,7 @@ public class SceneChanger {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Scene scene = new Scene(parent);
+        Scene scene = new Scene(parent, 1000, 800);
         Stage stage = (Stage) ((Node) theEvent.getSource()).getScene().getWindow();
         stage.setTitle(theSceneTitle);
         stage.setScene(scene);

@@ -60,7 +60,7 @@ public class NewUser {
      */
     private void setTheUsername(String theUsername) {
         if (theUsername.length() <= 5) {
-            throw new IllegalArgumentException("Username must me greater than 5 characters");
+            throw new IllegalArgumentException("Username must be greater than 5 characters");
         } else {
             myUserName = theUsername;
         }

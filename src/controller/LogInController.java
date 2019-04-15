@@ -70,16 +70,8 @@ public class LogInController implements Initializable {
     public void logInButtonPushed(ActionEvent theEvent) {
         //TODO (Check if user in DB)
 
-        // Play animations
-        new LightSpeedOut(myUserName).play();
-        new FadeOut(myUserLbl).play();
-
-        new LightSpeedOut(myPassWord).play();
-        new FadeOut(myPassLbl).play();
-
-        new FadeOutDown(myBtnLogIn).play();
-        new FadeOutDown(mySignUpBtn).play();
-
+        // Plays the animations
+        playTheAnimations();
         try {
             SceneChanger sceneChanger = new SceneChanger();
             sceneChanger.changeScene(theEvent, "HomePage.fxml", " Home Page");
@@ -92,6 +84,19 @@ public class LogInController implements Initializable {
         }
     }
 
+    /**
+     * This method is responsible for playing the animations from the
+     * lib import.
+     *
+     */
+    public void playTheAnimations() {
+        new LightSpeedOut(myUserName).play();
+        new FadeOut(myUserLbl).play();
+        new LightSpeedOut(myPassWord).play();
+        new FadeOut(myPassLbl).play();
+        new FadeOutDown(myBtnLogIn).play();
+        new FadeOutDown(mySignUpBtn).play();
+    }
     /**
      * This method handles the sign up botton and changes the view to
      * the sign up page.
