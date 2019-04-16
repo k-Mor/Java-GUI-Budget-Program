@@ -94,7 +94,6 @@ public class LogInController implements Initializable {
     /**
      * This method is responsible for playing the animations from the
      * lib import.
-     *
      */
     public void playTheAnimations() {
         new LightSpeedOut(myUserName).play();
@@ -110,7 +109,7 @@ public class LogInController implements Initializable {
      *
      * @param theEvent : This is the event that triggers the change.
      */
-    public void signUpButtonPushed(ActionEvent theEvent) throws IOException{
+    public void signUpButtonPushed(ActionEvent theEvent) {
         // Animation styles
 
         try {

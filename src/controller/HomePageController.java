@@ -4,6 +4,7 @@
 package controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import Model.DataBaseTools;
@@ -87,10 +88,20 @@ public class HomePageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         DataBaseTools dataBaseTools = new DataBaseTools();
-        Double money = dataBaseTools.getCurrentAccountBalance();
-        moneyDisplay.setText(money.toString());
+
+        // Set the account balance
+        try {
+            Double money = dataBaseTools.getCurrentAccountBalance();
+            String currentBalance = String.format("$%,.2f", money);
+            moneyDisplay.setText(currentBalance);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        // Set the percents
         averagePeriodSpending.setText("+15.0%");
         yearToDate.setText("+3.4%");
+
+        // Populate the graph
         graphLbl.setText("Test");
         accountBalanceLnk.setText("Click to change account");
     }

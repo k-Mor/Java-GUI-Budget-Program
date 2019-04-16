@@ -110,7 +110,7 @@ public class NewUser {
 
         try {
             // Connect to the DB
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "Admin-PASSwo-Rd");
+            conn = DriverManager.getConnection("jdbc:mysql://162.241.219.194/kalebsc1_MyBlueDataBase", "kalebsc1_theBoss", "Cassandra1$");
             // Create a string that holds the query with ? as user inputs
             String sql = "INSERT INTO users(userName, userPassword, salt)" +
                     "VALUES(?, ?, ?)";

@@ -19,95 +19,107 @@ import java.sql.*;
 public class DataBaseTools {
 
     /**
+     * This method is responsible for getting the connection to the db,
+     * and preparing the SQL statements.
+     *
+     * @param theSql : The statement that is going to be prepared
+     * @return : PreparedStatement that the calling program manipulates
+     */
+    private PreparedStatement manageConnection(String theSql) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            // Get the connection
+            connection = DriverManager.getConnection("jdbc:mysql://162.241.219.194/kalebsc1_MyBlueDataBase", "kalebsc1_theBoss", "Cassandra1$");
+
+            // prepare the statement
+            preparedStatement = connection.prepareStatement(theSql);
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return preparedStatement;
+    }
+
+    /**
      * This method is responsible for checking if the use is in the
      * database.
      *
      * @param theUserName : The user name to be checked.
      * @param thePassword : The password to be checked.
+     * @throws SQLException : In the event that something goes wrong.
      * @return : boolean indicating if the user is in the db or not.
      */
     public boolean checkIfUserInDb(String theUserName, String thePassword) throws SQLException {
-
-        //Query the database and search for this user
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         ResultSet resultSet = null;
         String dbPassword = "";
         byte[] salt = null;
         boolean result = false;
 
-        try {
-            // Get a connection
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "Admin-PASSwo-Rd");
+        // Get the string
+        String sql = "SELECT userPassword, salt FROM users WHERE userName = ?";
 
-            // Get the string
-            String sql = "SELECT userPassword, salt FROM users WHERE userName = ?";
+        // Prepare the statement
+        preparedStatement = manageConnection(sql);
 
-            // Prepare statement
-            preparedStatement = connection.prepareStatement(sql);
+        // Bind the question mark to the actual field
+        preparedStatement.setString(1, theUserName);
 
-            // Bind the question mark to the actual field
-            preparedStatement.setString(1, theUserName);
+        // Execute query
+        resultSet = preparedStatement.executeQuery();
 
-            // Execute query
-            resultSet = preparedStatement.executeQuery();
+        // extract the password and the salt from the resultset
+        while (resultSet.next()) {
+            dbPassword = resultSet.getString("userPassword");
 
-            // extract the password and the salt from the resultset
-            while (resultSet.next()) {
-                dbPassword = resultSet.getString("userPassword");
+            // Get the binary set of data
+            Blob blob = resultSet.getBlob("salt");
 
-                // Get the binary set of data
-                Blob blob = resultSet.getBlob("salt");
-
-                // Convert the salt
-                int blobLength = (int) blob.length();
-                salt = blob.getBytes(1, blobLength);
-            }
-            // Convert the password given by user into an encrypted password using the
-            // salt from the database
-            String userPassword = PasswordGenerator.getSHA512Password(thePassword, salt);
-
-            // Finally compare the passwords, and if true change scene
-            if (userPassword.equals(dbPassword)) {
-                result = true;
-            }
-            // If they do not match, update error message
-            else {
-                result = false;
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            // Convert the salt
+            int blobLength = (int) blob.length();
+            salt = blob.getBytes(1, blobLength);
         }
-        connection.close();
+
+        // Convert the password given by user into an encrypted password using the
+        // salt from the database
+        String userPassword = PasswordGenerator.getSHA512Password(thePassword, salt);
+
+        // Finally compare the passwords, and if true change scene
+        if (userPassword.equals(dbPassword)) {
+            result = true;
+        }
+        // If they do not match, update error message
+        else {
+            result = false;
+        }
+        // Close the connection
+        preparedStatement.close();
         return result;
     }
 
     /**
      * This method queries the remote MySQL database and retrieves the account balance.
-     * @return
+     *
+     * @throws SQLException : In the event that something goes wrong.
+     * @return : double which is a representation of the account balance in the db.
      */
-    public double getCurrentAccountBalance() {
-        Connection connection = null;
+    public double getCurrentAccountBalance() throws SQLException{
         PreparedStatement preparedStatement = null;
         ResultSet result = null;
         double returnResult = -1.0;
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://162.241.219.194/kalebsc1_MyBlueDataBase", "kalebsc1_theBoss", "Cassandra1$");
+        String sql = "SELECT balance FROM accounts WHERE itemId = ?";
+        preparedStatement = manageConnection(sql);
 
-            String sql = "SELECT balance FROM accounts WHERE itemId = ?";
+        preparedStatement.setString(1, "1");
 
-            preparedStatement = connection.prepareStatement(sql);
+        result = preparedStatement.executeQuery();
 
-            preparedStatement.setString(1, "1");
-
-            result = preparedStatement.executeQuery();
-
-            while (result.next()) {
-                returnResult = result.getDouble("balance");
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+        while (result.next()) {
+            returnResult = result.getDouble("balance");
         }
+        preparedStatement.close();
         return returnResult;
     }
 }
