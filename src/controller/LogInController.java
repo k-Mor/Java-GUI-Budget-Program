@@ -3,11 +3,14 @@
  */
 package controller;
 
+import Model.DataBaseTools;
+import Model.PasswordGenerator;
 import animatefx.animation.*;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -68,20 +71,24 @@ public class LogInController implements Initializable {
      * @param theEvent : This is the event.
      */
     public void logInButtonPushed(ActionEvent theEvent) {
-        //TODO (Check if user in DB)
-
-        // Plays the animations
-        playTheAnimations();
+        boolean test = false;
         try {
-            SceneChanger sceneChanger = new SceneChanger();
-            sceneChanger.changeScene(theEvent, "HomePage.fxml", " Home Page");
-            myErrLbl.setText("");
+            DataBaseTools dbTools = new DataBaseTools();
+            test = dbTools.checkIfUserInDb(myUserName.getText(), myPassWord.getText());
         } catch (Exception e) {
-            myErrLbl.setText(e.getMessage());
-            if (myErrLbl != null) {
+            myErrLbl.setText("User not found in database");
+            new FadeIn(myErrLbl).play();
+        }
+            if (test) {
+                SceneChanger sceneChanger = new SceneChanger();
+                sceneChanger.changeScene(theEvent, "HomePage.fxml", " Home Page");
+                myErrLbl.setText("");
+            }
+            // If they do not match, update error message
+            else {
+                myErrLbl.setText("User not found in database");
                 new FadeIn(myErrLbl).play();
             }
-        }
     }
 
     /**

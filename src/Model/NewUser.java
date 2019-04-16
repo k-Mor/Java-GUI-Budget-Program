@@ -3,6 +3,8 @@
  */
 package Model;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,21 +37,23 @@ public class NewUser {
     private String myPassword;
 
     /**
+     * This is the salt for the user.
+     */
+    private byte[] mySalt;
+
+    /**
      * This is the constructor that passes the username
      * and password to the appropriate methods.
      *
      * @param theUserName : This is the userName passed.
      * @param thePassword : This is the password that is passed.
+     * @throws NoSuchAlgorithmException : In the event that the getSalt is not found.
      */
-    public NewUser(String theUserName, String thePassword) {
-
-        //TODO
-        // 1.) Need to encrypt the password still.
-        // 2.) Ser up a decryption process.
-
+    public NewUser(String theUserName, String thePassword) throws NoSuchAlgorithmException {
+        mySalt = PasswordGenerator.getSalt();
         setTheUsername(theUserName);
+        System.out.println(myUserName);
         setThePassword(thePassword);
-        System.out.println("CONSTRUCTOR CALLED");
     }
 
     /**
@@ -77,6 +81,9 @@ public class NewUser {
         //TODO (CALL THE ENCRYPTION METHODS HERE)
        char[] specialChars = {'!','@','#','$','%','^','&','*','(',')','_'};
        boolean passOK = false;
+       if (thePassword.length() <= 5) {
+           throw new IllegalArgumentException("Password must be greater than or equal to 6 characters");
+       }
        for (int i = 0; i < thePassword.length(); i++) {
            for (int j = 0; j < specialChars.length; j++) {
                if (thePassword.charAt(i) == specialChars[j]) {
@@ -85,7 +92,8 @@ public class NewUser {
            }
        }
        if (passOK) {
-           myPassword = thePassword;
+           // Encrypts the password
+           myPassword = PasswordGenerator.getSHA512Password(thePassword, mySalt);
        } else {
            throw new IllegalArgumentException("Password must contain a special character");
        }
@@ -97,7 +105,6 @@ public class NewUser {
      * @throws SQLException : In the event that something goes wrong with the commands.
      */
     public void insertUserIntoDB() throws SQLException {
-        System.out.println("DATABASE METHOD CALLED");
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
@@ -105,14 +112,17 @@ public class NewUser {
             // Connect to the DB
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "Admin-PASSwo-Rd");
             // Create a string that holds the query with ? as user inputs
-            String sql = "INSERT INTO users(userName, userPassword)" +
-                    "VALUES(?, ?)";
+            String sql = "INSERT INTO users(userName, userPassword, salt)" +
+                    "VALUES(?, ?, ?)";
             // prepare the query
             preparedStatement = conn.prepareStatement(sql);
 
             // bind the values to the parameters
             preparedStatement.setString(1, myUserName);
             preparedStatement.setString(2, myPassword);
+
+            // This is how you set a blob data type
+            preparedStatement.setBlob(3, new javax.sql.rowset.serial.SerialBlob(mySalt));
             preparedStatement.executeUpdate();
 
         } catch (Exception e) {

@@ -55,6 +55,11 @@ public class SignUpController implements Initializable {
     @FXML private Button myBtnSignUp;
 
     /**
+     * This is the button to return to the sign in page.
+     */
+    @FXML private Button myBtnGoBack;
+
+    /**
      * This is a message label that displays wether or not
      * something has gone wrong during sign up.
      */
@@ -68,9 +73,8 @@ public class SignUpController implements Initializable {
      * data input in the textfields.
      *
      * @param theEvent : This is the event from the pushed buton
-     * @throws IOException : In the event that the file can not be found.
      */
-    public void signUpButtonPushed(ActionEvent theEvent) throws IOException{
+    public void signUpButtonPushed(ActionEvent theEvent) {
 
         try {
             if (!myPass.getText().equals(myConfirmPass.getText())) {
@@ -93,8 +97,6 @@ public class SignUpController implements Initializable {
             myMessageLabel.setText(e.getMessage());
             new FadeIn(myMessageLabel).play();
         }
-
-
     }
 
     /**
@@ -107,6 +109,16 @@ public class SignUpController implements Initializable {
         //Change the scene
         SceneChanger sceneChanger = new SceneChanger();
         sceneChanger.changeScene(theEvent, "LogInView.fxml", "Log In Page");
+    }
+
+    /**
+     * This method handles the changing of the stage back to
+     * The logInView so that the user is not trapped.
+     *
+     * @param theEvent : This is the event that was passed.
+     */
+    public void goBackButtonPushed(ActionEvent theEvent) {
+        changeTheScene(theEvent);
     }
 
     /**

@@ -6,13 +6,13 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Model.DataBaseTools;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import view.SceneChanger;
 
@@ -79,14 +79,16 @@ public class HomePageController implements Initializable {
     @FXML private Button logOutBtn;
 
     /**
-     * Initializes the controller class
+     * Initializes this controller class and sets initial values.
      *
      * @param url : This is the url.
      * @param rb : This is the resource bundle.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        moneyDisplay.setText("$9,345.44");
+        DataBaseTools dataBaseTools = new DataBaseTools();
+        Double money = dataBaseTools.getCurrentAccountBalance();
+        moneyDisplay.setText(money.toString());
         averagePeriodSpending.setText("+15.0%");
         yearToDate.setText("+3.4%");
         graphLbl.setText("Test");
