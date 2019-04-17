@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="All Transactions">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutY="14.0" prefHeight="646.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn prefWidth="118.0" text="Date" />
+                            <TableColumn prefWidth="135.0" text="Purchaser" />
+                              <TableColumn prefWidth="96.0" text="Vendor" />
+                              <TableColumn prefWidth="147.0" text="Description" />
+                              <TableColumn prefWidth="141.0" text="Category" />
+                              <TableColumn prefWidth="142.0" text="Amount" />
+                              <TableColumn prefWidth="220.0" text="Balance After Transaction" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Budget">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="277.0" layoutY="141.0" prefHeight="730.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn prefWidth="66.0" text="Item ID" />
+                            <TableColumn prefWidth="135.0" text="Date Last Paid" />
+                              <TableColumn prefWidth="123.0" text="Current Value" />
+                              <TableColumn prefWidth="150.0" text="Budgeted Value" />
+                              <TableColumn prefWidth="155.0" text="Expected Monthly" />
+                              <TableColumn minWidth="0.0" prefWidth="114.0" text="Due Date" />
+                              <TableColumn minWidth="1.0" prefWidth="256.0" text="Notes" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Accounts">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutY="14.0" prefHeight="646.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn prefWidth="108.0" text="Account ID" />
+                              <TableColumn prefWidth="174.0" text="Account Balance" />
+                              <TableColumn prefWidth="107.0" text="Type" />
+                              <TableColumn prefWidth="227.0" text="Account Number" />
+                              <TableColumn prefWidth="383.0" text="Notes" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Search">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+            <Tab text="Insights">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <bottom>
+      <HBox alignment="BOTTOM_CENTER" spacing="50.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Date" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Time" />
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <HBox spacing="10.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
+            <Button mnemonicParsing="false" styleClass="homePageMainButtons" text="Something" />
+            <Button mnemonicParsing="false" styleClass="homePageMainButtons" text="Something" />
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

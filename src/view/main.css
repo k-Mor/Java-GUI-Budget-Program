@@ -1,6 +1,9 @@
 /*Header Styles*/
 /*==================================================*/
 
+
+
+
 /*Menu Styles*/
 /*==================================================*/
 
@@ -13,6 +16,25 @@
 .backgroundSecondary {
     -fx-background-color: #5041f4;
 }
+
+/*Table Styles*/
+/*==================================================*/
+
+.table-view {
+    -fx-text-fill: white;
+    -fx-font-family: 'Raleway Regular';
+    -fx-font-size: 13pt;
+}
+.table-view .cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+}
+
+/*.table-view .column-header .label {*/
+/*    -fx-background-color: #5041f4;*/
+/*    -fx-text-fill: white;*/
+/*}*/
+
 
 /*Button Styles*/
 /*==================================================*/

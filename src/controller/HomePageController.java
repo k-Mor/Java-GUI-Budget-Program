@@ -5,9 +5,15 @@ package controller;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
-
 import Model.DataBaseTools;
+import Model.OtherTools;
+import animatefx.animation.FadeIn;
+import animatefx.animation.FadeOut;
+import animatefx.animation.Flash;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -80,6 +86,21 @@ public class HomePageController implements Initializable {
     @FXML private Button logOutBtn;
 
     /**
+     * This field connects the date view
+     */
+    @FXML private Text date;
+
+    /**
+     * This field connects the time view
+     */
+    @FXML private Text time;
+
+    /**
+     *
+     */
+    private  int myChosenAccount;
+
+    /**
      * Initializes this controller class and sets initial values.
      *
      * @param url : This is the url.
@@ -87,22 +108,38 @@ public class HomePageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Set the default account view which is account [1]
+        myChosenAccount = 1;
+
+        OtherTools otherTools = new OtherTools();
         DataBaseTools dataBaseTools = new DataBaseTools();
+
+        // Setting the time in the main view
+        otherTools.getTheTime(time);
+
+        // Setting the date
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date theDate = new Date();
+        date.setText(dateFormat.format(theDate));
 
         // Set the account balance
         try {
-            Double money = dataBaseTools.getCurrentAccountBalance();
+            double money = dataBaseTools.getCurrentAccountBalance(myChosenAccount);
             String currentBalance = String.format("$%,.2f", money);
             moneyDisplay.setText(currentBalance);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+
         // Set the percents
         averagePeriodSpending.setText("+15.0%");
         yearToDate.setText("+3.4%");
 
         // Populate the graph
         graphLbl.setText("Test");
+
+        // Account changing link
         accountBalanceLnk.setText("Click to change account");
     }
 
@@ -114,7 +151,7 @@ public class HomePageController implements Initializable {
      */
     public void viewDataButtonPushed(ActionEvent theEvent) {
         SceneChanger sceneChanger = new SceneChanger();
-        sceneChanger.changeScene(theEvent, "ViewDataView.fxml", "View Data");
+        sceneChanger.changeScene(theEvent, "ViewData.fxml", "View Data");
     }
 
     /**
@@ -165,9 +202,23 @@ public class HomePageController implements Initializable {
      * This is a link that will allow the user to change which account
      * they would like to view, and the associated data.
      *
-     * @param event : This is the event.
+     * @param theEvent : This is the event.
      */
-    public void accountBalanceLinkClicked(ActionEvent event) {
-        //TODO
+    public void accountBalanceLinkClicked(ActionEvent theEvent) {
+        double newBalance;
+        new Flash(accountBalanceLnk).play();
+        DataBaseTools dbTools = new DataBaseTools();
+        try {
+            if (myChosenAccount < 3) {
+                myChosenAccount += 1;
+            } else {
+                myChosenAccount = 1;
+            }
+            newBalance = dbTools.getCurrentAccountBalance(myChosenAccount);
+            moneyDisplay.setText(String.format("$%,.2f", newBalance));
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
     }
 }

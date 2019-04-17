@@ -105,14 +105,16 @@ public class DataBaseTools {
      * @throws SQLException : In the event that something goes wrong.
      * @return : double which is a representation of the account balance in the db.
      */
-    public double getCurrentAccountBalance() throws SQLException{
+    public double getCurrentAccountBalance(int theChosenAccount) throws SQLException{
+        String accountString = Integer.toString(theChosenAccount);
+        System.out.println(accountString);
         PreparedStatement preparedStatement = null;
         ResultSet result = null;
         double returnResult = -1.0;
         String sql = "SELECT balance FROM accounts WHERE itemId = ?";
         preparedStatement = manageConnection(sql);
 
-        preparedStatement.setString(1, "1");
+        preparedStatement.setString(1, accountString);
 
         result = preparedStatement.executeQuery();
 
