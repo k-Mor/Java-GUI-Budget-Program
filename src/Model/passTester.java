@@ -9,6 +9,8 @@ public class passTester {
     public static void main (String[] args) throws SQLException {
 //
         DataBaseTools dataBaseTools = new DataBaseTools();
+
+        System.out.println(dataBaseTools.getTheBudget());
 //        System.out.println(dataBaseTools.getCurrentAccountBalance(1));
 //        String password = "simple";
 //        byte[] salt = PasswordGenerator.getSalt();

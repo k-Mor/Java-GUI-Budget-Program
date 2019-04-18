@@ -4,9 +4,12 @@
 package Model;
 
 import animatefx.animation.FadeIn;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import view.SceneChanger;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 /**
  * The purpose of this class is to house all of the methods
@@ -94,8 +97,10 @@ public class DataBaseTools {
         else {
             result = false;
         }
-        // Close the connection
+        // Close things out
         preparedStatement.close();
+        resultSet.close();
+
         return result;
     }
 
@@ -107,7 +112,6 @@ public class DataBaseTools {
      */
     public double getCurrentAccountBalance(int theChosenAccount) throws SQLException{
         String accountString = Integer.toString(theChosenAccount);
-        System.out.println(accountString);
         PreparedStatement preparedStatement = null;
         ResultSet result = null;
         double returnResult = -1.0;
@@ -121,7 +125,133 @@ public class DataBaseTools {
         while (result.next()) {
             returnResult = result.getDouble("balance");
         }
+        // close things out
         preparedStatement.close();
+        result.close();
+
         return returnResult;
+    }
+
+    /**
+     * This method creates
+     *
+     * @return
+     * @throws SQLException
+     */
+    public ObservableList<Transaction> getTheTransactionList() throws SQLException{
+
+        // List of transactions
+        ObservableList<Transaction> transactions = FXCollections.observableArrayList();
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+
+        // Getting everything from the table
+        String sql = "SELECT * FROM transactions";
+
+        // Gets connection and prepares the SQL statement
+        preparedStatement = manageConnection(sql);
+
+        // Execute the query
+        result = preparedStatement.executeQuery();
+
+        while (result.next()) {
+
+            // Create a new transaction
+            Transaction newTransaction = new Transaction(result.getDate("dateOfTransaction").toLocalDate(),
+                    result.getString("purchaser"), result.getString("vendor"),
+                    result.getString("description"), result.getString("category"),
+                    result.getDouble("amount"), result.getDouble("accountBalance"),
+                    result.getDouble("accountID"));
+
+            // Set the ID
+            newTransaction.setMyTransactionId(result.getInt("itemId"));
+
+            // Add to the list to be returned
+            transactions.add(newTransaction);
+        }
+
+        // Close things out
+        preparedStatement.close();
+        result.close();
+
+        return transactions;
+    }
+
+    /**
+     * This method creates
+     *
+     * @return
+     * @throws SQLException
+     */
+    public ObservableList<Budget> getTheBudget() throws SQLException{
+
+        // List of transactions
+        ObservableList<Budget> budget = FXCollections.observableArrayList();
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+
+        // Getting everything from the table
+        String sql = "SELECT * FROM budget";
+
+        // Gets connection and prepares the SQL statement
+        preparedStatement = manageConnection(sql);
+
+        // Execute the query
+        result = preparedStatement.executeQuery();
+
+        while (result.next()) {
+
+            // Create a new transaction
+            // Null pointer exception is handles in the event that something is missing in the budget.
+            try {
+                Budget newBudget = new Budget(result.getDate("dateLastPaid").toLocalDate(),
+                        result.getString("itemName"), result.getDouble("currentValue"),
+                        result.getDouble("budgetedValue"), result.getDouble("expectedMonthlyValue"),
+                        result.getDate("dueDate").toLocalDate(), result.getString("itemNotes"));
+
+                // Set the ID
+                newBudget.setMyItemId(result.getInt("itemId"));
+
+                // Add to the list to be returned
+                budget.add(newBudget);
+            } catch (NullPointerException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        // Close things out
+        preparedStatement.close();
+        result.close();
+
+        return budget;
+    }
+
+    public void updateTransactionInDb(int theId, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
+        PreparedStatement preparedStatement = null;
+
+        String sql = "UPDATE transactions SET dateOfTransaction = ?, purchaser = ?, vendor = ?, description = ?, category = ?, amount = ?, accountBalance = ?, accountID = ? WHERE itemId = ?";
+        preparedStatement = manageConnection(sql);
+
+        System.out.println(theDesc);
+
+        Date date = Date.valueOf(theDate);
+
+        preparedStatement.setDate(1, date);
+        preparedStatement.setString(2, theP);
+        preparedStatement.setString(3, theV);
+        preparedStatement.setString(4, theDesc);
+        preparedStatement.setString(5, theCat);
+        preparedStatement.setDouble(6, theAmount);
+        preparedStatement.setDouble(7, theBal);
+        preparedStatement.setDouble(8, theAccId);
+        preparedStatement.setInt(9, theId);
+
+        // Do the update
+        preparedStatement.executeUpdate();
+
+        System.out.println("After the execute");
+
+        // close things out
+//        preparedStatement.close();
+
     }
 }

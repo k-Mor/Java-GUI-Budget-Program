@@ -3,6 +3,7 @@
  */
 package view;
 
+import Model.Transaction;
 import animatefx.animation.FadeInDown;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -45,4 +46,23 @@ public class SceneChanger {
         new FadeInDown(parent).play();
         stage.show();
     }
+
+    public void changeScene(ActionEvent theEvent, String theViewName, String theSceneTitle, Transaction theTransaction, ControllerInterface controllerInterface) throws IOException{
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(theViewName));
+        Parent parent = loader.load();
+
+        Scene scene = new Scene(parent, 1000, 800);
+
+        // Access controller class and preload data
+        controllerInterface = loader.getController();
+        controllerInterface.preLoadData(theTransaction);
+
+        Stage stage = (Stage) ((Node) theEvent.getSource()).getScene().getWindow();
+        stage.setTitle(theSceneTitle);
+        stage.setScene(scene);
+        new FadeInDown(parent).play();
+        stage.show();
+    }
+
 }

@@ -21,15 +21,17 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutY="14.0" prefHeight="646.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="myTransactionTable" onMouseClicked="#rowHasBeenSelected" layoutY="14.0" prefHeight="646.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-                            <TableColumn prefWidth="118.0" text="Date" />
-                            <TableColumn prefWidth="135.0" text="Purchaser" />
-                              <TableColumn prefWidth="96.0" text="Vendor" />
-                              <TableColumn prefWidth="147.0" text="Description" />
-                              <TableColumn prefWidth="141.0" text="Category" />
-                              <TableColumn prefWidth="142.0" text="Amount" />
-                              <TableColumn prefWidth="220.0" text="Balance After Transaction" />
+                              <TableColumn fx:id="myTransactionIDColumn" prefWidth="47.0" text="ID#" />
+                            <TableColumn fx:id="myTransactionDateColumn" prefWidth="86.0" text="Date" />
+                            <TableColumn fx:id="myPurchaserColumn" prefWidth="64.0" text="Purchaser" />
+                              <TableColumn fx:id="myVendorColumn" prefWidth="130.0" text="Vendor" />
+                              <TableColumn fx:id="myDescriptionColumn" prefWidth="193.0" text="Description" />
+                              <TableColumn fx:id="myCategoryColumn" prefWidth="98.0" text="Category" />
+                              <TableColumn fx:id="myAmountColumn" minWidth="0.0" prefWidth="119.0" text="Amount" />
+                              <TableColumn fx:id="myBalanceAfterColumn" prefWidth="159.0" text="Balance After Transaction" />
+                              <TableColumn fx:id="myFromAccountColumn" prefWidth="103.0" text="From Account" />
                           </columns>
                         </TableView>
                      </children>
@@ -40,15 +42,16 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="277.0" layoutY="141.0" prefHeight="730.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="myBudgetTable" layoutX="277.0" layoutY="141.0" prefHeight="730.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-                            <TableColumn prefWidth="66.0" text="Item ID" />
-                            <TableColumn prefWidth="135.0" text="Date Last Paid" />
-                              <TableColumn prefWidth="123.0" text="Current Value" />
-                              <TableColumn prefWidth="150.0" text="Budgeted Value" />
-                              <TableColumn prefWidth="155.0" text="Expected Monthly" />
-                              <TableColumn minWidth="0.0" prefWidth="114.0" text="Due Date" />
-                              <TableColumn minWidth="1.0" prefWidth="256.0" text="Notes" />
+                            <TableColumn fx:id="myBudgetIDColumn" prefWidth="66.0" text="Item ID" />
+                              <TableColumn fx:id="myItemNameColumn" prefWidth="103.0" text="Item Name" />
+                            <TableColumn fx:id="myDateLastPaidColumn" prefWidth="98.0" text="Date Last Paid" />
+                              <TableColumn fx:id="myCurrentValueColumn" prefWidth="123.0" text="Current Value" />
+                              <TableColumn fx:id="myBudgetedValueColumn" prefWidth="150.0" text="Budgeted Value" />
+                              <TableColumn fx:id="myExpectedMonthlyColumn" prefWidth="155.0" text="Expected Monthly" />
+                              <TableColumn fx:id="myDueDateColumn" minWidth="0.0" prefWidth="114.0" text="Due Date" />
+                              <TableColumn fx:id="myNotesColumn" minWidth="1.0" prefWidth="256.0" text="Notes" />
                           </columns>
                         </TableView>
                      </children>
@@ -88,8 +91,8 @@
    <bottom>
       <HBox alignment="BOTTOM_CENTER" spacing="50.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Date" />
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Time" />
+            <Text fx:id="myDate" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Date" />
+            <Text fx:id="myTime" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LogInLabels" text="Time" />
          </children>
       </HBox>
    </bottom>
@@ -97,7 +100,7 @@
       <HBox spacing="10.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
-            <Button mnemonicParsing="false" styleClass="homePageMainButtons" text="Something" />
+            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#editButtonPushed" styleClass="homePageMainButtons" text="Edit" />
             <Button mnemonicParsing="false" styleClass="homePageMainButtons" text="Something" />
          </children>
       </HBox>
