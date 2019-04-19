@@ -4,28 +4,20 @@
 package controller;
 
 import Model.Budget;
-import Model.DataBaseTools;
-import Model.PasswordGenerator;
 import Model.Transaction;
-import animatefx.animation.*;
+import animatefx.animation.FadeIn;
 import javafx.event.ActionEvent;
-
-import java.io.IOException;
-import java.net.URL;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import view.ControllerInterface;
 import view.SceneChanger;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 /**
  * This class is the controller for the NewTransaction.FXML file.
@@ -33,7 +25,7 @@ import view.SceneChanger;
  * @author : Kaleb
  * @version : 2019-04-10
  */
-public class EditTransactionViewController implements Initializable, ControllerInterface {
+public class EditAccountViewController implements Initializable, ControllerInterface {
 
     /**
      * This is the actual transaction object that is captured when

@@ -231,8 +231,6 @@ public class DataBaseTools {
         String sql = "UPDATE transactions SET dateOfTransaction = ?, purchaser = ?, vendor = ?, description = ?, category = ?, amount = ?, accountBalance = ?, accountID = ? WHERE itemId = ?";
         preparedStatement = manageConnection(sql);
 
-        System.out.println(theDesc);
-
         Date date = Date.valueOf(theDate);
 
         preparedStatement.setDate(1, date);
@@ -248,10 +246,53 @@ public class DataBaseTools {
         // Do the update
         preparedStatement.executeUpdate();
 
-        System.out.println("After the execute");
-
         // close things out
-//        preparedStatement.close();
+        preparedStatement.close();
 
+    }
+
+    /**
+     * This method is responsible for updating the budget in the db.
+     *
+     * @param theId : The id that may be changed
+     * @param theDateLastPaid : The new date the item was last paid.
+     * @param theItemName : The new item name
+     * @param theCurrentV : The new current value of the item.
+     * @param theBudgetedV : The new budgeted value of the item
+     * @param theExpectedM : The new expected monethly value
+     * @param theDueDate : The new due date
+     * @param theNotes : The new notes for the item.
+     */
+    public void updateBudgetItemInDb(int theId, LocalDate theDateLastPaid,
+                                     String theItemName, Double theCurrentV,
+                                     Double theBudgetedV, Double theExpectedM,
+                                     LocalDate theDueDate, String theNotes) {
+        PreparedStatement preparedStatement = null;
+        String sql = "UPDATE budget SET itemId = ?, dateLastPaid = ?, itemName = ?, currentValue = ?, budgetedValue = ?, expectedMonthlyValue = ?, dueDate = ?, itemNotes = ?";
+        preparedStatement = manageConnection(sql);
+
+        // Convert the dates into dates SQL can understand
+        Date dueDate = Date.valueOf(theDueDate);
+        Date dateLastPaid = Date.valueOf(theDateLastPaid);
+
+        try {
+            preparedStatement.setInt(1, theId);
+            preparedStatement.setDate(2, dateLastPaid);
+            preparedStatement.setString(3, theItemName);
+            preparedStatement.setDouble(4, theCurrentV);
+            preparedStatement.setDouble(5, theBudgetedV);
+            preparedStatement.setDouble(6, theExpectedM);
+            preparedStatement.setDate(7, dueDate);
+            preparedStatement.setString(8, theNotes);
+
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }

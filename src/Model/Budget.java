@@ -3,6 +3,7 @@
  */
 package Model;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -54,6 +55,17 @@ public class Budget {
      */
     private String myItemNotes;
 
+    /**
+     * This is the constructor for the budget object.
+     *
+     * @param theDateLastPaid : The date the bill was last paid.
+     * @param theItemName : The name of the budget line item.
+     * @param theCurrentValue : The current value of the line item.
+     * @param theBudgetedValue : The value that was budgeted for.
+     * @param theExpectedMonthly : The expected monthly cost of the item.
+     * @param theDueDate : The due date of the item.
+     * @param theItemNotes : Any associated notes for the item.
+     */
     public Budget(LocalDate theDateLastPaid, String theItemName, Double theCurrentValue,
                   Double theBudgetedValue, Double theExpectedMonthly, LocalDate theDueDate, String theItemNotes) {
 
@@ -66,70 +78,163 @@ public class Budget {
         setMyItemNotes(theItemNotes);
     }
 
+    /**
+     * A getter for the item ID.
+     *
+     * @return
+     */
     public int getMyItemId() {
         return myItemId;
     }
 
-    public void setMyItemId(int myItemId) {
-        this.myItemId = myItemId;
+    /**
+     * A setter for the itemID
+     *
+     * @param theItemId : The item ID that the item will change to.
+     */
+    public void setMyItemId(int theItemId) {
+        myItemId = theItemId;
     }
 
+    /**
+     * A getter for the date last paid.
+     *
+     * @return
+     */
     public LocalDate getMyDateLastPaid() {
         return myDateLastPaid;
     }
 
-    public void setMyDateLastPaid(LocalDate myDateLastPaid) {
-        this.myDateLastPaid = myDateLastPaid;
+    /**
+     * A setter for the date last paid.
+     *
+     * @param theDateLastPaid : The new date last paid
+     */
+    public void setMyDateLastPaid(LocalDate theDateLastPaid) {
+        myDateLastPaid = theDateLastPaid;
     }
 
+    /**
+     * A getter for the item name.
+     *
+     * @return
+     */
     public String getMyItemName() {
         return myItemName;
     }
 
-    public void setMyItemName(String myItemName) {
-        this.myItemName = myItemName;
+    /**
+     * A setter for the item name
+     *
+     * @param theItemName : The new item name.
+     */
+    public void setMyItemName(String theItemName) {
+        myItemName = theItemName;
     }
 
+    /**
+     * A getter for the current value.
+     *
+     * @return
+     */
     public Double getMyCurrentValue() {
         return myCurrentValue;
     }
 
-    public void setMyCurrentValue(Double myCurrentValue) {
-        this.myCurrentValue = myCurrentValue;
+    /**
+     * Setter for the current value.
+     *
+     * @param theCurrentValue : The new current value.
+     */
+    public void setMyCurrentValue(Double theCurrentValue) {
+        myCurrentValue = theCurrentValue;
     }
 
+    /**
+     * A getter for the budgeted value
+     *
+     * @return
+     */
     public Double getMyBudgetedValue() {
         return myBudgetedValue;
     }
 
-    public void setMyBudgetedValue(Double myBudgetedValue) {
-        this.myBudgetedValue = myBudgetedValue;
+    /**
+     * This is a setter for the budgeted value.
+     *
+     * @param theBudgetedValue : The new budgeted value.
+     */
+    public void setMyBudgetedValue(Double theBudgetedValue) {
+        myBudgetedValue = theBudgetedValue;
     }
 
+    /**
+     * This is a getter for the field.
+     *
+     * @return
+     */
     public Double getMyExpectedMonthly() {
         return myExpectedMonthly;
     }
 
-    public void setMyExpectedMonthly(Double myExpectedMonthly) {
-        this.myExpectedMonthly = myExpectedMonthly;
+    /**
+     * A setter for the expected monthly value
+     *
+     * @param theExpectedMonthly : The new expected value.
+     */
+    public void setMyExpectedMonthly(Double theExpectedMonthly) {
+        myExpectedMonthly = theExpectedMonthly;
     }
 
+    /**
+     * A getter for the due date.
+     *
+     * @return
+     */
     public LocalDate getMyDueDate() {
         return myDueDate;
     }
 
-    public void setMyDueDate(LocalDate myDueDate) {
-        this.myDueDate = myDueDate;
+    /**
+     * A setter for the due date.
+     *
+     * @param theDueDate : The new due date.
+     */
+    public void setMyDueDate(LocalDate theDueDate) {
+        myDueDate = theDueDate;
     }
 
+    /**
+     * A getter for the item notes.
+     *
+     * @return
+     */
     public String getMyItemNotes() {
         return myItemNotes;
     }
 
-    public void setMyItemNotes(String myItemNotes) {
-        this.myItemNotes = myItemNotes;
+    /**
+     * A setter for the item notes.
+     *
+     * @param theItemNotes : The new notes.
+     */
+    public void setMyItemNotes(String theItemNotes) {
+        myItemNotes = theItemNotes;
     }
 
+    /**
+     *
+     */
+    public void updateBudgetItem() {
+        DataBaseTools dbTools = new DataBaseTools();
+        dbTools.updateBudgetItemInDb(myItemId, myDateLastPaid, myItemName, myCurrentValue, myBudgetedValue, myExpectedMonthly, myDueDate, myItemNotes);
+
+    }
+    /**
+     * The overriden two string method.
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "Budget{" +

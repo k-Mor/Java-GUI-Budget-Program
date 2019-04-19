@@ -31,10 +31,24 @@ import view.SceneChanger;
  */
 public class ViewDataController implements Initializable {
 
+    /**
+     * The time that is displayed.
+     */
     @FXML private Text myTime;
+
+    /**
+     * The date that is displayed.
+     */
     @FXML private Text myDate;
+
+    /**
+     * The edit button that triggers a view change.
+     */
     @FXML private Button editBtn;
 
+    /**
+     * These are table columns for the transaction table view tab
+     */
     @FXML private TableView<Transaction> myTransactionTable;
     @FXML private TableColumn<Transaction, Integer> myTransactionIDColumn;
     @FXML private TableColumn<Transaction, LocalDate> myTransactionDateColumn;
@@ -46,6 +60,9 @@ public class ViewDataController implements Initializable {
     @FXML private TableColumn<Transaction, Double> myBalanceAfterColumn;
     @FXML private TableColumn<Transaction, Integer> myFromAccountColumn;
 
+    /**
+     * These are the table columns for the budget table view tab.
+     */
     @FXML private TableView<Budget> myBudgetTable;
     @FXML private TableColumn<Budget, Integer> myBudgetIDColumn;
     @FXML private TableColumn<Budget, String> myItemNameColumn;
@@ -87,6 +104,10 @@ public class ViewDataController implements Initializable {
         editBtn.setDisable(true);
     }
 
+    /**
+     * This method is responsible for assigning the table cells to the
+     * fields in the Transaction class.
+     */
     public void setTheTransactionTable() {
         // Configure the table columns
         myTransactionIDColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myTransactionId"));
@@ -110,6 +131,10 @@ public class ViewDataController implements Initializable {
         }
     }
 
+    /**
+     * This method is responsible for assigning the table cells to the
+     * fields in the Budget class.
+     */
     public void setTheBudgetTable() {
         // Configure the table columns
         myBudgetIDColumn.setCellValueFactory(new PropertyValueFactory<Budget, Integer>("myItemId"));

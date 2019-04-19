@@ -4,28 +4,20 @@
 package controller;
 
 import Model.Budget;
-import Model.DataBaseTools;
-import Model.PasswordGenerator;
 import Model.Transaction;
-import animatefx.animation.*;
+import animatefx.animation.FadeIn;
 import javafx.event.ActionEvent;
-
-import java.io.IOException;
-import java.net.URL;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import view.ControllerInterface;
 import view.SceneChanger;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 /**
  * This class is the controller for the NewTransaction.FXML file.
@@ -33,26 +25,30 @@ import view.SceneChanger;
  * @author : Kaleb
  * @version : 2019-04-10
  */
-public class EditTransactionViewController implements Initializable, ControllerInterface {
+public class EditBudgetViewController implements Initializable, ControllerInterface {
 
     /**
      * This is the actual transaction object that is captured when
      * a user selects a line item in the transaction table.
      */
-    private Transaction myTransaction;
+    private Budget myBudgetItem;
 
     /**
      * These are textFields for the form which allows edits.
      */
-    @FXML private  TextField myTransactionID;
-    @FXML private  TextField myTransactionDate;
-    @FXML private  TextField myPurchaser;
-    @FXML private  TextField myVendor;
-    @FXML private  TextField myDescription;
-    @FXML private  TextField myCategory;
-    @FXML private  TextField myAmount;
-    @FXML private  TextField myBalanceAfter;
-    @FXML private  TextField myFromAccount;
+    @FXML private  TextField myItemID;
+    @FXML private  TextField myDateLastPaid;
+    @FXML private  TextField myItemName;
+    @FXML private  TextField myCurrentValue;
+    @FXML private  TextField myBudgetedValue;
+    @FXML private  TextField myExpectedMonthly;
+    @FXML private  TextField myDueDate;
+    @FXML private  TextField myItemNotes;
+
+    /**
+     * This is a label to indicate to the user when the budget has been
+     * successfully updated.
+     */
     @FXML private Label myLbl;
 
 
@@ -65,6 +61,7 @@ public class EditTransactionViewController implements Initializable, ControllerI
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
+
         myLbl.setText("");
     }
 
@@ -77,7 +74,7 @@ public class EditTransactionViewController implements Initializable, ControllerI
         updateTransaction();
 
         // Updates that user in the DB
-        myTransaction.updateTransactionInDb();
+        myBudgetItem.();
 
         // Tell the user
         myLbl.setText("Change successfully recorded");
@@ -104,16 +101,17 @@ public class EditTransactionViewController implements Initializable, ControllerI
         // Do conversions
         // convert String to LocalDate
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(myTransactionDate.getText(), formatter);
+        LocalDate dateLastPaid = LocalDate.parse(myDateLastPaid.getText(), formatter);
+        LocalDate dueDate = LocalDate.parse(myDueDate.getText(), formatter);
 
-        myTransaction.setMyTransactionDate(localDate);
-        myTransaction.setMyPurchaser(myPurchaser.getText());
-        myTransaction.setMyVendor(myVendor.getText());
-        myTransaction.setMyDescription(myDescription.getText());
-        myTransaction.setMyCategory(myCategory.getText());
-        myTransaction.setMyAmount(Double.parseDouble(myAmount.getText()));
-        myTransaction.setMyBalanceAfter(Double.parseDouble(myBalanceAfter.getText()));
-        myTransaction.setMyAccountFrom(Double.parseDouble(myFromAccount.getText()));
+        myBudgetItem.setMyItemId(Integer.parseInt(myItemID.getText()));
+        myBudgetItem.setMyDateLastPaid(dateLastPaid);
+        myBudgetItem.setMyItemName(myItemName.getText());
+        myBudgetItem.setMyItemNotes(myItemNotes.getText());
+        myBudgetItem.setMyCurrentValue(Double.parseDouble(myCurrentValue.getText()));
+        myBudgetItem.setMyBudgetedValue(Double.parseDouble(myBudgetedValue.getText()));
+        myBudgetItem.setMyExpectedMonthly(Double.parseDouble(myExpectedMonthly.getText()));
+        myBudgetItem.setMyAccountFrom(Double.parseDouble(myFromAccount.getText()));
     }
 
     /**
