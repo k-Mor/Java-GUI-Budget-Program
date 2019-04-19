@@ -14,71 +14,68 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" styleClass="backgroundPrimary" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditTransactionViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" styleClass="backgroundPrimary" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditBudgetViewController">
    <children>
       <HBox alignment="TOP_CENTER" layoutX="218.0" layoutY="120.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="BASELINE_LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" spacing="47.0">
+            <VBox alignment="BASELINE_LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" spacing="48.0">
                <children>
                   <Label styleClass="signUpPageMainLabels" text="Item ID#:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font></Label>
-                  <Label styleClass="signUpPageMainLabels" text="Date of Transaction:">
+                  <Label styleClass="signUpPageMainLabels" text="Date Last Paid:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Purchaser:">
+                  <Label styleClass="signUpPageMainLabels" text="Item Name:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Vendor:">
+                  <Label styleClass="signUpPageMainLabels" text="Current Value:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Description:">
+                  <Label styleClass="signUpPageMainLabels" text="Budgeted Value:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Category:">
+                  <Label styleClass="signUpPageMainLabels" text="Expected Monthly:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Amount:">
+                  <Label styleClass="signUpPageMainLabels" text="Due Date:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Account Balance:">
-                     <font>
-                        <Font name="Raleway Thin" size="36.0" />
-                     </font>
-                  </Label>
-                  <Label styleClass="signUpPageMainLabels" text="Account ID#:">
+                  <Label styleClass="signUpPageMainLabels" text="Item Notes:">
                      <font>
                         <Font name="Raleway Thin" size="36.0" />
                      </font>
                   </Label>
                </children>
+               <padding>
+                  <Insets top="40.0" />
+               </padding>
             </VBox>
             <VBox alignment="CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="300.0" spacing="10.0" styleClass="backgroundSecondary">
                <children>
                   <VBox alignment="CENTER" prefWidth="200.0" spacing="55.0">
                      <children>
-                        <TextField fx:id="myTransactionID" prefHeight="23.0" prefWidth="200.0" promptText="Change the ID" styleClass="borderRadius" />
-                        <TextField fx:id="myTransactionDate" prefHeight="23.0" prefWidth="200.0" promptText="Change the date" styleClass="borderRadius" />
-                        <TextField fx:id="myPurchaser" prefHeight="23.0" prefWidth="200.0" promptText="Change the purchaser" styleClass="borderRadius" />
-                        <TextField fx:id="myVendor" prefHeight="23.0" prefWidth="200.0" promptText="Change the vendor" styleClass="borderRadius" />
-                        <TextField fx:id="myDescription" prefHeight="23.0" prefWidth="200.0" promptText="Change the description" styleClass="borderRadius" />
-                        <TextField fx:id="myCategory" prefHeight="23.0" prefWidth="200.0" promptText="Change the category" styleClass="borderRadius" />
-                        <TextField fx:id="myAmount" prefHeight="23.0" prefWidth="200.0" promptText="Change the amount" styleClass="borderRadius" />
-                        <TextField fx:id="myBalanceAfter" prefHeight="23.0" prefWidth="200.0" promptText="Change the balance" styleClass="borderRadius" />
-                        <TextField fx:id="myFromAccount" prefHeight="23.0" prefWidth="200.0" promptText="Change the account ID" styleClass="borderRadius" />
+                        <TextField fx:id="myItemID" prefHeight="23.0" prefWidth="200.0" promptText="Enter the ID" styleClass="borderRadius" />
+                        <TextField fx:id="myDateLastPaid" prefHeight="23.0" prefWidth="200.0" promptText="Enter the date" styleClass="borderRadius" />
+                        <TextField fx:id="myItemName" prefHeight="23.0" prefWidth="200.0" promptText="Enter the item name" styleClass="borderRadius" />
+                        <TextField fx:id="myCurrentValue" prefHeight="23.0" prefWidth="200.0" promptText="Enter the current value" styleClass="borderRadius" />
+                        <TextField fx:id="myBudgetedValue" prefHeight="23.0" prefWidth="200.0" promptText="Enter the budgeted amount " styleClass="borderRadius" />
+                        <TextField fx:id="myExpectedMonthly" prefHeight="23.0" prefWidth="200.0" promptText="Enter the expected monthly cost" styleClass="borderRadius" />
+                        <TextField fx:id="myDueDate" prefHeight="23.0" prefWidth="200.0" promptText="Enter the due date" styleClass="borderRadius" />
+                        <TextField fx:id="myItemNotes" prefHeight="23.0" prefWidth="200.0" promptText="Enter the item notes" styleClass="borderRadius" />
                      </children>
                      <padding>
                         <Insets top="10.0" />

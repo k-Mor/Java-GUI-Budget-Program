@@ -32,6 +32,10 @@ import view.SceneChanger;
 public class ViewDataController implements Initializable {
 
     /**
+     *
+     */
+    @FXML private TabPane thePane;
+    /**
      * The time that is displayed.
      */
     @FXML private Text myTime;
@@ -184,11 +188,30 @@ public class ViewDataController implements Initializable {
      *
      * @param theEvent
      */
-    public void editButtonPushed(ActionEvent theEvent) throws IOException {
+    public void editButtonPushedTransactions(ActionEvent theEvent) throws IOException {
         SceneChanger sceneChanger = new SceneChanger();
+        System.out.println(theEvent.getSource());
+        System.out.println(theEvent.toString());
+        System.out.println(theEvent.getTarget());
+        System.out.println(theEvent);
+
+        // Figure out which tab you are on.
+        System.out.println(thePane);
         Transaction transaction = myTransactionTable.getSelectionModel().getSelectedItem();
         EditTransactionViewController etvc = new EditTransactionViewController();
 
         sceneChanger.changeScene(theEvent, "EditTransactions.fxml", "Edit Page", transaction, etvc);
     }
+
+//    /**
+//     *
+//     * @param theEvent
+//     */
+//    public void editButtonPushedBudget(ActionEvent theEvent) throws IOException {
+//        SceneChanger sceneChanger = new SceneChanger();
+//        Budget budgetItem = myBudgetTable.getSelectionModel().getSelectedItem();
+//        EditTransactionViewController etvc = new EditTransactionViewController();
+//
+//        sceneChanger.changeScene(theEvent, "EditTransactions.fxml", "Edit Page", budgetItem, etvc);
+//    }
 }

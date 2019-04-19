@@ -15,7 +15,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="thePane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="All Transactions">
             <content>
@@ -42,7 +42,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="myBudgetTable" layoutX="277.0" layoutY="141.0" prefHeight="730.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="myBudgetTable" onMouseClicked="#rowHasBeenSelected" layoutX="277.0" layoutY="141.0" prefHeight="730.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn fx:id="myBudgetIDColumn" prefWidth="66.0" text="Item ID" />
                               <TableColumn fx:id="myItemNameColumn" prefWidth="103.0" text="Item Name" />
@@ -100,7 +100,7 @@
       <HBox spacing="10.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
-            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#editButtonPushed" styleClass="homePageMainButtons" text="Edit" />
+            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#editButtonPushedTransactions" styleClass="homePageMainButtons" text="Edit" />
             <Button mnemonicParsing="false" styleClass="homePageMainButtons" text="Something" />
          </children>
       </HBox>

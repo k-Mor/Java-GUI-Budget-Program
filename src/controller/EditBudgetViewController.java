@@ -71,10 +71,10 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
      */
     public void saveButtonPushed() {
         // First updates the actual object
-        updateTransaction();
+        updateBudgetItem();
 
-        // Updates that user in the DB
-        myBudgetItem.();
+        // Updates that budget item in the DB
+        myBudgetItem.updateBudgetItem();
 
         // Tell the user
         myLbl.setText("Change successfully recorded");
@@ -96,7 +96,7 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
      * This method updates a particular instance of the selected Transaction
      * by accessing the setters for that instance.
      */
-    public void updateTransaction() {
+    public void updateBudgetItem() {
 
         // Do conversions
         // convert String to LocalDate
@@ -106,12 +106,13 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
 
         myBudgetItem.setMyItemId(Integer.parseInt(myItemID.getText()));
         myBudgetItem.setMyDateLastPaid(dateLastPaid);
+        myBudgetItem.setMyDateLastPaid(dueDate);
         myBudgetItem.setMyItemName(myItemName.getText());
         myBudgetItem.setMyItemNotes(myItemNotes.getText());
         myBudgetItem.setMyCurrentValue(Double.parseDouble(myCurrentValue.getText()));
         myBudgetItem.setMyBudgetedValue(Double.parseDouble(myBudgetedValue.getText()));
         myBudgetItem.setMyExpectedMonthly(Double.parseDouble(myExpectedMonthly.getText()));
-        myBudgetItem.setMyAccountFrom(Double.parseDouble(myFromAccount.getText()));
+
     }
 
     /**
@@ -124,27 +125,25 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
      */
     @Override
     public void preLoadData(Transaction theTransaction) {
-
-        // Transfer the data from the passed transaction object to the new view.
-        myTransaction = theTransaction;
-        myTransactionID.setText(Integer.toString(myTransaction.getMyTransactionId()));
-        myTransactionDate.setText(myTransaction.getMyTransactionDate().toString());
-        myPurchaser.setText(myTransaction.getMyPurchaser());
-        myVendor.setText(myTransaction.getMyVendor());
-        myDescription.setText(myTransaction.getMyDescription());
-        myCategory.setText(myTransaction.getMyCategory());
-        myAmount.setText(Double.toString(myTransaction.getMyAmount()));
-        myBalanceAfter.setText(Double.toString(myTransaction.getMyBalanceAfter()));
-        myFromAccount.setText(Double.toString(myTransaction.getMyAccountFrom()));
-
     }
 
     /**
      * This is required by the interface and is not yet used.
      *
-     * @param theBudget
+     * @param theBudgetItem
      */
     @Override
-    public void preLoadData(Budget theBudget) {
+    public void preLoadData(Budget theBudgetItem) {
+
+        // Transfer the data from the passed budget item to the new view.
+        myBudgetItem = theBudgetItem;
+        myItemID.setText(Integer.toString(myBudgetItem.getMyItemId()));
+        myDateLastPaid.setText(myBudgetItem.getMyDateLastPaid().toString());
+        myItemName.setText(myBudgetItem.getMyItemName());
+        myCurrentValue.setText(Double.toString(myBudgetItem.getMyCurrentValue()));
+        myBudgetedValue.setText(Double.toString(myBudgetItem.getMyBudgetedValue()));
+        myExpectedMonthly.setText(Double.toString(myBudgetItem.getMyExpectedMonthly()));
+        myDueDate.setText(myBudgetItem.getMyDueDate().toString());
+        myItemNotes.setText(myBudgetItem.getMyItemNotes());
     }
 }
