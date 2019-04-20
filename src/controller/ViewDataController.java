@@ -32,10 +32,6 @@ import view.SceneChanger;
 public class ViewDataController implements Initializable {
 
     /**
-     *
-     */
-    @FXML private TabPane thePane;
-    /**
      * The time that is displayed.
      */
     @FXML private Text myTime;
@@ -49,6 +45,14 @@ public class ViewDataController implements Initializable {
      * The edit button that triggers a view change.
      */
     @FXML private Button editBtn;
+
+    /**
+     * The table tabs
+     */
+    @FXML private Tab theTransactionsTab;
+    @FXML private Tab theBudgetTab;
+    @FXML private Tab theAccountsTab;
+
 
     /**
      * These are table columns for the transaction table view tab
@@ -196,7 +200,6 @@ public class ViewDataController implements Initializable {
         System.out.println(theEvent);
 
         // Figure out which tab you are on.
-        System.out.println(thePane);
         Transaction transaction = myTransactionTable.getSelectionModel().getSelectedItem();
         EditTransactionViewController etvc = new EditTransactionViewController();
 

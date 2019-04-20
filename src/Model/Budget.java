@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
- * This is the transaction class which houses all of the methods
- * pertaining to transaction objects.
+ * This is the Budget class which houses all of the methods
+ * pertaining to Budget objects.
  *
  * @author : Kaleb
  * @version : 2019-04-17
