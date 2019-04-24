@@ -125,10 +125,10 @@ public class EditTransactionViewController implements Initializable, ControllerI
      *                       over to be changed, or not.
      */
     @Override
-    public void preLoadData(Transaction theTransaction) {
+    public void preLoadData(Object theTransaction) {
 
         // Transfer the data from the passed transaction object to the new view.
-        myTransaction = theTransaction;
+        myTransaction = (Transaction) theTransaction;
         myTransactionID.setText(Integer.toString(myTransaction.getMyTransactionId()));
         myTransactionDate.setText(myTransaction.getMyTransactionDate().toString());
         myPurchaser.setText(myTransaction.getMyPurchaser());
@@ -141,12 +141,12 @@ public class EditTransactionViewController implements Initializable, ControllerI
 
     }
 
-    /**
-     * This is required by the interface and is not yet used.
-     *
-     * @param theBudget
-     */
-    @Override
-    public void preLoadData(Budget theBudget) {
-    }
+//    /**
+//     * This is required by the interface and is not yet used.
+//     *
+//     * @param theBudget
+//     */
+//    @Override
+//    public void preLoadData(Budget theBudget) {
+//    }
 }

@@ -252,11 +252,25 @@ public class Transaction {
      *
      */
     public void updateTransactionInDb() {
+        String sql = "UPDATE transactions SET dateOfTransaction = ?, purchaser = ?, vendor = ?, description = ?, category = ?, amount = ?, accountBalance = ?, accountID = ? WHERE itemId = ?";
+        DataBaseTools dbTools = new DataBaseTools();
+        try {
+            dbTools.updateTransactionInDb(sql, myTransactionId, myTransactionDate, myPurchaser, myVendor, myDescription, myCategory, myAmount, myBalanceAfter, myAccountFrom);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    /**
+     *
+     */
+    public void insertTransactionInDb() {
+        String sql = "INSERT INTO transactions (dateOfTransaction, purchaser, vendor, description, category, amount, accountBalance, accountID) VALUES (?,?,?,?,?,?,?,?)";
         DataBaseTools dbTools = new DataBaseTools();
         System.out.println(myTransactionId);
         try {
-            dbTools.updateTransactionInDb(myTransactionId, myTransactionDate, myPurchaser, myVendor, myDescription, myCategory, myAmount, myBalanceAfter, myAccountFrom);
-            System.out.println("Transaction updating?");
+            dbTools.InsertTransactionInDb(sql, myTransactionDate, myPurchaser, myVendor, myDescription, myCategory, myAmount, myBalanceAfter, myAccountFrom);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }

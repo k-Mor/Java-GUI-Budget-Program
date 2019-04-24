@@ -133,23 +133,46 @@ public class DataBaseTools {
     }
 
     /**
+     * This method queries the remote MySQL database and retrieves the account type.
+     *
+     * @throws SQLException : In the event that something goes wrong.
+     * @return : double which is a representation of the account balance in the db.
+     */
+    public String getAccountType(int theChosenAccount) throws SQLException{
+        String accountString = Integer.toString(theChosenAccount);
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+        String returnResult = "";
+        String sql = "SELECT type FROM accounts WHERE itemId = ?";
+        preparedStatement = manageConnection(sql);
+        preparedStatement.setString(1, accountString);
+        result = preparedStatement.executeQuery();
+
+        while (result.next()) {
+            returnResult = result.getString("type");
+        }
+        // close things out
+        preparedStatement.close();
+        result.close();
+
+        return returnResult;
+    }
+
+    /**
      * This method creates
      *
      * @return
      * @throws SQLException
      */
-    public ObservableList<Transaction> getTheTransactionList() throws SQLException{
+    public ObservableList<Transaction> getTheTransactionList(String theSQL) throws SQLException{
 
         // List of transactions
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
         PreparedStatement preparedStatement = null;
         ResultSet result = null;
 
-        // Getting everything from the table
-        String sql = "SELECT * FROM transactions";
-
         // Gets connection and prepares the SQL statement
-        preparedStatement = manageConnection(sql);
+        preparedStatement = manageConnection(theSQL);
 
         // Execute the query
         result = preparedStatement.executeQuery();
@@ -225,10 +248,58 @@ public class DataBaseTools {
         return budget;
     }
 
-    public void updateTransactionInDb(int theId, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
+
+    /**
+     * This method creates
+     *
+     * @return
+     * @throws SQLException
+     */
+    public ObservableList<Account> getTheAccounts() throws SQLException{
+
+        // List of transactions
+        ObservableList<Account> account = FXCollections.observableArrayList();
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+
+        // Getting everything from the table
+        String sql = "SELECT * FROM accounts";
+
+        // Gets connection and prepares the SQL statement
+        preparedStatement = manageConnection(sql);
+
+        // Execute the query
+        result = preparedStatement.executeQuery();
+
+        while (result.next()) {
+
+            // Create a new transaction
+            // Null pointer exception is handles in the event that something is missing in the budget.
+            try {
+                Account newAccount = new Account(result.getDouble("balance"), result.getString("type"));
+
+                // Set the ID
+                newAccount.setMyAccountId(result.getInt("itemId"));
+
+                // Add to the list to be returned
+                account.add(newAccount);
+            } catch (NullPointerException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        // Close things out
+        preparedStatement.close();
+        result.close();
+
+        return account;
+    }
+
+
+
+
+    public void updateTransactionInDb(String sql, int theId, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
         PreparedStatement preparedStatement = null;
 
-        String sql = "UPDATE transactions SET dateOfTransaction = ?, purchaser = ?, vendor = ?, description = ?, category = ?, amount = ?, accountBalance = ?, accountID = ? WHERE itemId = ?";
         preparedStatement = manageConnection(sql);
 
         Date date = Date.valueOf(theDate);
@@ -252,6 +323,44 @@ public class DataBaseTools {
     }
 
     /**
+     *
+     * @param sql
+     * @param theDate
+     * @param theP
+     * @param theV
+     * @param theDesc
+     * @param theCat
+     * @param theAmount
+     * @param theBal
+     * @param theAccId
+     * @throws SQLException
+     */
+    public void InsertTransactionInDb(String sql, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
+        PreparedStatement preparedStatement = null;
+
+        preparedStatement = manageConnection(sql);
+
+        Date date = Date.valueOf(theDate);
+
+        preparedStatement.setDate(1, date);
+        preparedStatement.setString(2, theP);
+        preparedStatement.setString(3, theV);
+        preparedStatement.setString(4, theDesc);
+        preparedStatement.setString(5, theCat);
+        preparedStatement.setDouble(6, theAmount);
+        preparedStatement.setDouble(7, theBal);
+        preparedStatement.setDouble(8, theAccId);
+//        preparedStatement.setInt(9, theId);
+
+        // Do the update
+        preparedStatement.execute();
+
+        // close things out
+        preparedStatement.close();
+
+    }
+
+    /**
      * This method is responsible for updating the budget in the db.
      *
      * @param theId : The id that may be changed
@@ -268,7 +377,7 @@ public class DataBaseTools {
                                      Double theBudgetedV, Double theExpectedM,
                                      LocalDate theDueDate, String theNotes) {
         PreparedStatement preparedStatement = null;
-        String sql = "UPDATE budget SET itemId = ?, dateLastPaid = ?, itemName = ?, currentValue = ?, budgetedValue = ?, expectedMonthlyValue = ?, dueDate = ?, itemNotes = ?";
+        String sql = "UPDATE budget SET dateLastPaid = ?, itemName = ?, currentValue = ?, budgetedValue = ?, expectedMonthlyValue = ?, dueDate = ?, itemNotes = ? WHERE itemId = ?";
         preparedStatement = manageConnection(sql);
 
         // Convert the dates into dates SQL can understand
@@ -276,14 +385,42 @@ public class DataBaseTools {
         Date dateLastPaid = Date.valueOf(theDateLastPaid);
 
         try {
-            preparedStatement.setInt(1, theId);
-            preparedStatement.setDate(2, dateLastPaid);
-            preparedStatement.setString(3, theItemName);
-            preparedStatement.setDouble(4, theCurrentV);
-            preparedStatement.setDouble(5, theBudgetedV);
-            preparedStatement.setDouble(6, theExpectedM);
-            preparedStatement.setDate(7, dueDate);
-            preparedStatement.setString(8, theNotes);
+            preparedStatement.setDate(1, dateLastPaid);
+            preparedStatement.setString(2, theItemName);
+            preparedStatement.setDouble(3, theCurrentV);
+            preparedStatement.setDouble(4, theBudgetedV);
+            preparedStatement.setDouble(5, theExpectedM);
+            preparedStatement.setDate(6, dueDate);
+            preparedStatement.setString(7, theNotes);
+            preparedStatement.setInt(8, theId);
+
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * This method updates the account information in the database.
+     *
+     * @param theId : The ID to be checked for updating.
+     * @param theAccountBalance : The new account balance.
+     * @param theAccountType : The new account type.
+     */
+    public void updateAccountInDb(int theId, Double theAccountBalance, String theAccountType) {
+        PreparedStatement preparedStatement = null;
+        String sql = "UPDATE accounts SET balance = ?, type = ? WHERE itemId = ?";
+        preparedStatement = manageConnection(sql);
+
+        try {
+            preparedStatement.setDouble(1, theAccountBalance);
+            preparedStatement.setString(2, theAccountType);
+            preparedStatement.setInt(3, theId);
 
             // Do the update
             preparedStatement.executeUpdate();

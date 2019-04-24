@@ -33,15 +33,15 @@ public interface ControllerInterface {
     /**
      *
      *
-     * @param theTransaction
+     * @param theObject
      */
-    public abstract void preLoadData(Transaction theTransaction);
+    public abstract void preLoadData(Object theObject);
 
-    /**
-     *
-     * @param theBudget
-     */
-    public abstract void preLoadData(Budget theBudget);
+//    /**
+//     *
+//     * @param theBudget
+//     */
+//    public abstract void preLoadData( theBudget);
 
 //    /**
 //     *

@@ -47,7 +47,7 @@ public class SceneChanger {
         stage.show();
     }
 
-    public void changeScene(ActionEvent theEvent, String theViewName, String theSceneTitle, Transaction theTransaction, ControllerInterface controllerInterface) throws IOException{
+    public void changeScene(ActionEvent theEvent, String theViewName, String theSceneTitle, Object theObject, ControllerInterface controllerInterface) throws IOException{
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(theViewName));
         Parent parent = loader.load();
@@ -56,7 +56,7 @@ public class SceneChanger {
 
         // Access controller class and preload data
         controllerInterface = loader.getController();
-        controllerInterface.preLoadData(theTransaction);
+        controllerInterface.preLoadData(theObject);
 
         Stage stage = (Stage) ((Node) theEvent.getSource()).getScene().getWindow();
         stage.setTitle(theSceneTitle);

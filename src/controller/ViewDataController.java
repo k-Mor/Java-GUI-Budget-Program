@@ -2,12 +2,8 @@
  * Multiline comment at the top of the file.
  */
 package controller;
-import Model.Budget;
-import Model.DataBaseTools;
-import Model.OtherTools;
-import Model.Transaction;
+import Model.*;
 import javafx.event.ActionEvent;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -32,6 +28,11 @@ import view.SceneChanger;
 public class ViewDataController implements Initializable {
 
     /**
+     *
+     */
+    private Tab mySelectedTab;
+
+    /**
      * The time that is displayed.
      */
     @FXML private Text myTime;
@@ -44,15 +45,26 @@ public class ViewDataController implements Initializable {
     /**
      * The edit button that triggers a view change.
      */
-    @FXML private Button editBtn;
+    @FXML private Button myEditBtn;
+
+    /**
+     *
+     */
+    @FXML private TabPane myPane;
+
+    /**
+     * These are the search options in the search tab.
+     */
+    @FXML private ChoiceBox<String> myChoiceBox;
+    @FXML private TextField myKeyword;
 
     /**
      * The table tabs
      */
-    @FXML private Tab theTransactionsTab;
-    @FXML private Tab theBudgetTab;
-    @FXML private Tab theAccountsTab;
-
+    @FXML private Tab myTransactionsTab;
+    @FXML private Tab myBudgetTab;
+    @FXML private Tab myAccountTab;
+    @FXML private Tab mySearchTab;
 
     /**
      * These are table columns for the transaction table view tab
@@ -81,6 +93,27 @@ public class ViewDataController implements Initializable {
     @FXML private TableColumn<Budget, LocalDate> myDueDateColumn;
     @FXML private TableColumn<Budget, String> myNotesColumn;
 
+    /**
+     * These are the table columns for the account tab.
+     */
+    @FXML private TableView<Account> myAccountTable;
+    @FXML private TableColumn<Account, Integer> myAccountIDColumn;
+    @FXML private TableColumn<Account, Double> myAccountBalanceColumn;
+    @FXML private TableColumn<Account, String> myAccountTypeColumn;
+
+    /**
+     * These are table columns for the Search table view tab
+     */
+    @FXML private TableView<Transaction> mySearchTable;
+    @FXML private TableColumn<Transaction, Integer> mySearchedTransactionIDColumn;
+    @FXML private TableColumn<Transaction, LocalDate> mySearchedTransactionDateColumn;
+    @FXML private TableColumn<Transaction, String> mySearchedPurchaserColumn;
+    @FXML private TableColumn<Transaction, String> mySearchedVendorColumn;
+    @FXML private TableColumn<Transaction, String> mySearchedDescriptionColumn;
+    @FXML private TableColumn<Transaction, String> mySearchedCategoryColumn;
+    @FXML private TableColumn<Transaction, Double> mySearchedAmountColumn;
+    @FXML private TableColumn<Transaction, Double> mySearchedBalanceAfterColumn;
+    @FXML private TableColumn<Transaction, Integer> mySearchedFromAccountColumn;
 
     /**
      * This is the overriden method that
@@ -91,11 +124,16 @@ public class ViewDataController implements Initializable {
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
+        mySelectedTab = myTransactionsTab;
         // Set the transactions up
-        setTheTransactionTable();
+        String sql = "SELECT * FROM transactions";
+        setTheTransactionTable(sql);
 
         // set the budget up
         setTheBudgetTable();
+
+        // Set the accounts up
+        setTheAccountTable();
 
         // set the time and date
         OtherTools ot = new OtherTools();
@@ -105,19 +143,26 @@ public class ViewDataController implements Initializable {
         Date theDate = new Date();
         myDate.setText(dateFormat.format(theDate));
 
-        //set the accounts up
-//        setTheAccountTable();
-
         // Disable the edit button until row is selected.
-        editBtn.setDisable(true);
+        myEditBtn.setDisable(true);
+
+        // Set the search tab options
+        myChoiceBox.getItems().add("Search Transactions by date");
+        myChoiceBox.getItems().add("Search Transactions by Purchaser");
+        myChoiceBox.getItems().add("Search Transactions by Vendor");
+        myChoiceBox.getItems().add("Search Transactions by Category");
+        myChoiceBox.getItems().add("Search Transactions by Amount");
+        myChoiceBox.getItems().add("Search Transactions by Account");
+        myChoiceBox.getItems().add("Search Transactions by Description");
+
     }
 
     /**
      * This method is responsible for assigning the table cells to the
      * fields in the Transaction class.
      */
-    public void setTheTransactionTable() {
-        // Configure the table columns
+    public void setTheTransactionTable(String theSQL) {
+        // Configure the Transaction table columns
         myTransactionIDColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myTransactionId"));
         myTransactionDateColumn.setCellValueFactory(new PropertyValueFactory<Transaction, LocalDate>("myTransactionDate"));
         myPurchaserColumn.setCellValueFactory(new PropertyValueFactory<Transaction, String>("myPurchaser"));
@@ -128,12 +173,27 @@ public class ViewDataController implements Initializable {
         myBalanceAfterColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Double>("myBalanceAfter"));
         myFromAccountColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myAccountFrom"));
 
+        // Configure the search table columns
+        mySearchedTransactionIDColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myTransactionId"));
+        mySearchedTransactionDateColumn.setCellValueFactory(new PropertyValueFactory<Transaction, LocalDate>("myTransactionDate"));
+        mySearchedPurchaserColumn.setCellValueFactory(new PropertyValueFactory<Transaction, String>("myPurchaser"));
+        mySearchedVendorColumn.setCellValueFactory(new PropertyValueFactory<Transaction, String>("myVendor"));
+        mySearchedDescriptionColumn.setCellValueFactory(new PropertyValueFactory<Transaction, String>("myDescription"));
+        mySearchedCategoryColumn.setCellValueFactory(new PropertyValueFactory<Transaction, String>("myCategory"));
+        mySearchedAmountColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Double>("myAmount"));
+        mySearchedBalanceAfterColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Double>("myBalanceAfter"));
+        mySearchedFromAccountColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myAccountFrom"));
+
         try {
             // Get a new instance of the dbtools.
             DataBaseTools dbTools = new DataBaseTools();
-
             // Adds all of the newly created transactions to the transaction table.
-            myTransactionTable.getItems().addAll(dbTools.getTheTransactionList());
+            if (mySelectedTab.equals(mySearchTab)) {
+                mySearchTable.getItems().addAll(dbTools.getTheTransactionList(theSQL));
+
+            } else {
+                myTransactionTable.getItems().addAll(dbTools.getTheTransactionList(theSQL));
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -165,9 +225,27 @@ public class ViewDataController implements Initializable {
         }
     }
 
-//    public void setTheAccountTable() {
-//
-//    }
+    /**
+     * This method is responsible for assigning the table cells to the
+     * fields in the Budget class.
+     */
+    public void setTheAccountTable() {
+        // Configure the table columns
+        myAccountIDColumn.setCellValueFactory(new PropertyValueFactory<Account, Integer>("myAccountId"));
+        myAccountBalanceColumn.setCellValueFactory(new PropertyValueFactory<Account, Double>("myAccountBalance"));
+        myAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<Account, String>("myAccountType"));
+
+        try {
+            // Get a new instance of the dbtools.
+            DataBaseTools dbTools = new DataBaseTools();
+
+            // Adds all of the newly created transactions to the transaction table.
+            myAccountTable.getItems().addAll(dbTools.getTheAccounts());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
     /**
      * This method handles the flow of control when the input data
      * button is pushed.
@@ -180,12 +258,17 @@ public class ViewDataController implements Initializable {
     }
 
     /**
-     * This method handles the flow of control when the edit
-     * button is pushed.
-     *
+     * This method handles wakes up the edit button when a row has been selected.
      */
     public void rowHasBeenSelected() {
-        editBtn.setDisable(false);
+        myEditBtn.setDisable(false);
+    }
+
+    /**
+     * This method makes the selected tab equal to whatever tab the user has clicked on.
+     */
+    public void selectedTab() {
+        mySelectedTab = myPane.getSelectionModel().selectedItemProperty().get();
     }
 
     /**
@@ -194,27 +277,54 @@ public class ViewDataController implements Initializable {
      */
     public void editButtonPushedTransactions(ActionEvent theEvent) throws IOException {
         SceneChanger sceneChanger = new SceneChanger();
-        System.out.println(theEvent.getSource());
-        System.out.println(theEvent.toString());
-        System.out.println(theEvent.getTarget());
-        System.out.println(theEvent);
 
         // Figure out which tab you are on.
-        Transaction transaction = myTransactionTable.getSelectionModel().getSelectedItem();
-        EditTransactionViewController etvc = new EditTransactionViewController();
+        if (mySelectedTab.equals(myTransactionsTab)) {
+            Transaction transaction = myTransactionTable.getSelectionModel().getSelectedItem();
+            EditTransactionViewController editTrans = new EditTransactionViewController();
 
-        sceneChanger.changeScene(theEvent, "EditTransactions.fxml", "Edit Page", transaction, etvc);
+            sceneChanger.changeScene(theEvent, "EditTransactions.fxml", "Edit Page", transaction, editTrans);
+        } else if (mySelectedTab.equals(myBudgetTab)) {
+            // This is where everything for the budget view goes.
+            Budget selectedBudgetItem = myBudgetTable.getSelectionModel().getSelectedItem();
+            EditBudgetViewController editBudget = new EditBudgetViewController();
+            sceneChanger.changeScene(theEvent, "EditBudget.fxml", "Edit Page", selectedBudgetItem, editBudget);
+        } else if (mySelectedTab.equals(myAccountTab)) {
+            // This is where everything for the budget view goes.
+            Account selectedAccount = myAccountTable.getSelectionModel().getSelectedItem();
+            EditAccountViewController editAccount = new EditAccountViewController();
+            sceneChanger.changeScene(theEvent, "EditAccounts.fxml", "Edit Page", selectedAccount, editAccount);
+        }
     }
 
-//    /**
-//     *
-//     * @param theEvent
-//     */
-//    public void editButtonPushedBudget(ActionEvent theEvent) throws IOException {
-//        SceneChanger sceneChanger = new SceneChanger();
-//        Budget budgetItem = myBudgetTable.getSelectionModel().getSelectedItem();
-//        EditTransactionViewController etvc = new EditTransactionViewController();
-//
-//        sceneChanger.changeScene(theEvent, "EditTransactions.fxml", "Edit Page", budgetItem, etvc);
-//    }
+    public void searchButtonPushed(ActionEvent theEvent) {
+        mySelectedTab = mySearchTab;
+        String value = myChoiceBox.getValue();
+        mySearchTable.getItems().clear();
+        String sql = "";
+
+        if (value == "Search Transactions by date") {
+            // Handling the date search
+            java.sql.Date date = java.sql.Date.valueOf(myKeyword.getText());
+            sql = "SELECT * FROM transactions WHERE dateOfTransaction ='" + date + "'";
+        } else if (value == "Search Transactions by Purchaser") {
+            // Handling the purchaser
+            sql = "SELECT * FROM transactions WHERE purchaser ='" + myKeyword.getText() + "'";
+        } else if (value == "Search Transactions by Vendor") {
+            // Handling the Vendor
+            sql = "SELECT * FROM transactions WHERE vendor ='" + myKeyword.getText() + "'";
+        } else if (value == "Search Transactions by Category") {
+            // Handling the category
+            sql = "SELECT * FROM transactions WHERE category ='" + myKeyword.getText() + "'";
+        } else if (value == "Search Transactions by Amount") {
+            // Handling the specific amount
+            sql = "SELECT * FROM transactions WHERE amount LIKE'%" + myKeyword.getText() + "%'";
+        } else if (value == "Search Transactions by Account") {
+            // Handling the account
+            sql = "SELECT * FROM transactions WHERE accountID ='" + myKeyword.getText() + "'";
+        } else if (value == "Search Transactions by Description"){
+            sql = "SELECT * FROM transactions WHERE description LIKE '%" + myKeyword.getText() + "%'";
+        }
+        setTheTransactionTable(sql);
+    }
 }

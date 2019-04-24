@@ -94,6 +94,11 @@ public class HomePageController implements Initializable {
      * This field connects the time view
      */
     @FXML private Text time;
+    /**
+     *
+     */
+
+    @FXML private Label accountTypeLabel;
 
     /**
      *
@@ -126,8 +131,11 @@ public class HomePageController implements Initializable {
         // Set the account balance
         try {
             double money = dataBaseTools.getCurrentAccountBalance(myChosenAccount);
+            String type = dataBaseTools.getAccountType(myChosenAccount);
             String currentBalance = String.format("$%,.2f", money);
             moneyDisplay.setText(currentBalance);
+            accountTypeLabel.setText(type);
+
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -162,7 +170,7 @@ public class HomePageController implements Initializable {
      */
     public void inputDataButtonPushed(ActionEvent theEvent) {
         SceneChanger sceneChanger = new SceneChanger();
-        sceneChanger.changeScene(theEvent, "InputDataView.fxml", "Input Data");
+        sceneChanger.changeScene(theEvent, "InputData.fxml", "Input Data");
     }
 
     /**
@@ -206,6 +214,7 @@ public class HomePageController implements Initializable {
      */
     public void accountBalanceLinkClicked(ActionEvent theEvent) {
         double newBalance;
+        String accountType;
         new Flash(accountBalanceLnk).play();
         DataBaseTools dbTools = new DataBaseTools();
         try {
@@ -215,7 +224,9 @@ public class HomePageController implements Initializable {
                 myChosenAccount = 1;
             }
             newBalance = dbTools.getCurrentAccountBalance(myChosenAccount);
+            accountType = dbTools.getAccountType(myChosenAccount);
             moneyDisplay.setText(String.format("$%,.2f", newBalance));
+            accountTypeLabel.setText(accountType);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }

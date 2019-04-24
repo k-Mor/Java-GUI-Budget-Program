@@ -104,9 +104,9 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
         LocalDate dateLastPaid = LocalDate.parse(myDateLastPaid.getText(), formatter);
         LocalDate dueDate = LocalDate.parse(myDueDate.getText(), formatter);
 
-        myBudgetItem.setMyItemId(Integer.parseInt(myItemID.getText()));
+//        myBudgetItem.setMyItemId(Integer.parseInt(myItemID.getText()));
         myBudgetItem.setMyDateLastPaid(dateLastPaid);
-        myBudgetItem.setMyDateLastPaid(dueDate);
+        myBudgetItem.setMyDueDate(dueDate);
         myBudgetItem.setMyItemName(myItemName.getText());
         myBudgetItem.setMyItemNotes(myItemNotes.getText());
         myBudgetItem.setMyCurrentValue(Double.parseDouble(myCurrentValue.getText()));
@@ -115,17 +115,17 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
 
     }
 
-    /**
-     * This method is an overidden method that brings the data from this controller
-     * to the chosen view. This method specifically brings over all of the fields from the
-     * table view and drops them in the textFields in the edit view.
-     *
-     * @param theTransaction : This is the instance of the transaction that is being brought
-     *                       over to be changed, or not.
-     */
-    @Override
-    public void preLoadData(Transaction theTransaction) {
-    }
+//    /**
+//     * This method is an overidden method that brings the data from this controller
+//     * to the chosen view. This method specifically brings over all of the fields from the
+//     * table view and drops them in the textFields in the edit view.
+//     *
+//     * @param theTransaction : This is the instance of the transaction that is being brought
+//     *                       over to be changed, or not.
+//     */
+//    @Override
+//    public void preLoadData(Transaction theTransaction) {
+//    }
 
     /**
      * This is required by the interface and is not yet used.
@@ -133,10 +133,10 @@ public class EditBudgetViewController implements Initializable, ControllerInterf
      * @param theBudgetItem
      */
     @Override
-    public void preLoadData(Budget theBudgetItem) {
+    public void preLoadData(Object theBudgetItem) {
 
         // Transfer the data from the passed budget item to the new view.
-        myBudgetItem = theBudgetItem;
+        myBudgetItem = (Budget) theBudgetItem;
         myItemID.setText(Integer.toString(myBudgetItem.getMyItemId()));
         myDateLastPaid.setText(myBudgetItem.getMyDateLastPaid().toString());
         myItemName.setText(myBudgetItem.getMyItemName());

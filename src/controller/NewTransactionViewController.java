@@ -1,0 +1,147 @@
+/*
+ * Multiline comment at the top of the file.
+ */
+package controller;
+
+import Model.Account;
+import Model.DataBaseTools;
+import Model.Transaction;
+import animatefx.animation.FadeIn;
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import view.ControllerInterface;
+import view.SceneChanger;
+
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.ResourceBundle;
+
+/**
+ * This class is the controller for the NewTransaction.FXML file.
+ *
+ * @author : Kaleb
+ * @version : 2019-04-10
+ */
+public class NewTransactionViewController implements Initializable {
+
+    /**
+     * This is the actual transaction object that is captured when
+     * a user selects a line item in the transaction table.
+     */
+    private Transaction myTransaction;
+
+    /**
+     * These are textFields for the form which allows edits.
+     */
+    @FXML private  TextField myTransactionDate;
+    @FXML private  TextField myPurchaser;
+    @FXML private  TextField myVendor;
+    @FXML private  TextField myDescription;
+    @FXML private  TextField myCategory;
+    @FXML private  TextField myAmount;
+    @FXML private ChoiceBox<String> myFromAccount;
+    @FXML private Label myLbl;
+
+
+    /**
+     * This is the overriden method that
+     * initializes the controller class.
+     *
+     * @param theUrl : This is an unused parameter.
+     * @param theRb  : This is an unused parameter.
+     */
+    @Override
+    public void initialize(URL theUrl, ResourceBundle theRb) {
+        DataBaseTools dbTools = new DataBaseTools();
+        try {
+            ObservableList<Account> accounts = dbTools.getTheAccounts();
+            Iterator<Account> itr = accounts.iterator();
+
+            // Get the selection of accounts
+            while (itr.hasNext()) {
+                myFromAccount.getItems().add(itr.next().getMyAccountType());
+            }
+        } catch (SQLException e) {
+            myLbl.setText(e.getMessage());
+        }
+        myLbl.setText("");
+    }
+
+    /**
+     * This method is responsible for controlling what happens when
+     * the save button is pushed.
+     */
+    public void saveButtonPushed() {
+        // First updates the actual object
+        createNewTransaction();
+
+        // Tell the user
+        myLbl.setText("Change successfully recorded");
+        new FadeIn(myLbl).play();
+    }
+
+    /**
+     * This method is responsible for handling the event when the goBack
+     * button is pushed.
+     *
+     * @param theEvent : The event that is triggered when the button is pushed.
+     */
+    public void goBackButtonPushed(ActionEvent theEvent) {
+        SceneChanger sceneChanger = new SceneChanger();
+        sceneChanger.changeScene(theEvent, "ViewData.fxml", "Data Page");
+    }
+
+    /**
+     * This method updates a particular instance of the selected Transaction
+     * by accessing the setters for that instance.
+     */
+    public void createNewTransaction() {
+        myFromAccount.getValue();
+        Double balance = 0.0;
+        Double theId = 0.0;
+        LocalDate date = LocalDate.parse(myTransactionDate.getText());
+        try {
+            DataBaseTools dbTools = new DataBaseTools();
+            ObservableList<Account> accounts = dbTools.getTheAccounts();
+            Iterator<Account> itr = accounts.iterator();
+
+            // This is gonna be buggy
+            while (itr.hasNext()) {
+                if (itr.next().getMyAccountType().equals(myFromAccount)) {
+                    balance = itr.next().getMyAccountBalance() - Double.valueOf(myAmount.getText());
+                    theId = Double.valueOf(itr.next().getMyAccountId());
+                }
+            }
+        } catch (SQLException e) {
+            myLbl.setText(e.getMessage());
+        }
+
+        //Create the new transaction
+        myTransaction = new Transaction(date, myPurchaser.getText(),
+                myVendor.getText(), myDescription.getText(),
+                myCategory.getText(), Double.valueOf(myAmount.getText()),
+                balance, theId);
+
+        // Insert it.
+        myTransaction.insertTransactionInDb();
+    }
+
+
+//    /**
+//     * This is required by the interface and is not yet used.
+//     *
+//     * @param theBudget
+//     */
+//    @Override
+//    public void preLoadData(Budget theBudget) {
+//    }
+}

@@ -41,6 +41,7 @@
                <children>
                   <Hyperlink fx:id="accountBalanceLnk" onAction="#accountBalanceLinkClicked" styleClass="errMessages" text="Account Balance" />
                   <Text fx:id="moneyDisplay" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="moneyDisplay" text="\$5,000.00" />
+                  <Label fx:id="accountTypeLabel" styleClass="errMessages" text="Label" />
                </children>
             </VBox>
             <HBox alignment="TOP_CENTER">

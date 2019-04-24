@@ -10,12 +10,6 @@ public class passTester {
 //
         DataBaseTools dataBaseTools = new DataBaseTools();
 
-        System.out.println(dataBaseTools.getTheBudget());
-//        System.out.println(dataBaseTools.getCurrentAccountBalance(1));
-//        String password = "simple";
-//        byte[] salt = PasswordGenerator.getSalt();
-//        System.out.printf("password: %s%n", PasswordGenerator.getSHA512Password(password, salt));
-//        System.out.printf("password: %s%n", PasswordGenerator.getSHA512Password(password, salt));
-//        System.out.printf("password: %s%n", PasswordGenerator.getSHA512Password(password, salt));
+        System.out.println(dataBaseTools.getTheAccounts());
         }
 }
