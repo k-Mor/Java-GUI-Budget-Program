@@ -113,7 +113,7 @@ public class EditTransactionViewController implements Initializable, ControllerI
         myTransaction.setMyCategory(myCategory.getText());
         myTransaction.setMyAmount(Double.parseDouble(myAmount.getText()));
         myTransaction.setMyBalanceAfter(Double.parseDouble(myBalanceAfter.getText()));
-        myTransaction.setMyAccountFrom(Double.parseDouble(myFromAccount.getText()));
+        myTransaction.setMyAccountFrom(Integer.parseInt(myFromAccount.getText()));
     }
 
     /**
@@ -137,7 +137,7 @@ public class EditTransactionViewController implements Initializable, ControllerI
         myCategory.setText(myTransaction.getMyCategory());
         myAmount.setText(Double.toString(myTransaction.getMyAmount()));
         myBalanceAfter.setText(Double.toString(myTransaction.getMyBalanceAfter()));
-        myFromAccount.setText(Double.toString(myTransaction.getMyAccountFrom()));
+        myFromAccount.setText(Integer.toString(myTransaction.getMyAccountFrom()));
 
     }
 

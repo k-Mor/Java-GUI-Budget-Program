@@ -20,8 +20,11 @@ import view.SceneChanger;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
@@ -73,6 +76,9 @@ public class NewTransactionViewController implements Initializable {
         } catch (SQLException e) {
             myLbl.setText(e.getMessage());
         }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date theDate = new Date();
+        myTransactionDate.setText(dateFormat.format(theDate));
         myLbl.setText("");
     }
 
@@ -81,11 +87,14 @@ public class NewTransactionViewController implements Initializable {
      * the save button is pushed.
      */
     public void saveButtonPushed() {
+        // Validate the fields
+        //TODO
+
         // First updates the actual object
         createNewTransaction();
 
         // Tell the user
-        myLbl.setText("Change successfully recorded");
+        myLbl.setText("Charge successfully recorded!");
         new FadeIn(myLbl).play();
     }
 
@@ -107,18 +116,20 @@ public class NewTransactionViewController implements Initializable {
     public void createNewTransaction() {
         myFromAccount.getValue();
         Double balance = 0.0;
-        Double theId = 0.0;
+        Integer theId = 0;
+        Account accountHolding;
         LocalDate date = LocalDate.parse(myTransactionDate.getText());
+        DataBaseTools dbTools = new DataBaseTools();
         try {
-            DataBaseTools dbTools = new DataBaseTools();
             ObservableList<Account> accounts = dbTools.getTheAccounts();
             Iterator<Account> itr = accounts.iterator();
 
-            // This is gonna be buggy
+            // This should get the balance-after after the transaction data has been captured
             while (itr.hasNext()) {
-                if (itr.next().getMyAccountType().equals(myFromAccount)) {
-                    balance = itr.next().getMyAccountBalance() - Double.valueOf(myAmount.getText());
-                    theId = Double.valueOf(itr.next().getMyAccountId());
+                accountHolding = itr.next();
+                if (accountHolding.getMyAccountType().equals(myFromAccount.getValue())) {
+                    balance = accountHolding.getMyAccountBalance() - Double.valueOf(myAmount.getText());
+                    theId = accountHolding.getMyAccountId();
                 }
             }
         } catch (SQLException e) {
@@ -133,15 +144,8 @@ public class NewTransactionViewController implements Initializable {
 
         // Insert it.
         myTransaction.insertTransactionInDb();
+
+        //update the budget
+        dbTools.applyChargeToBudget(myCategory.getText(), Double.valueOf(myAmount.getText()));
     }
-
-
-//    /**
-//     * This is required by the interface and is not yet used.
-//     *
-//     * @param theBudget
-//     */
-//    @Override
-//    public void preLoadData(Budget theBudget) {
-//    }
 }

@@ -18,7 +18,7 @@ public class Transaction {
     /**
      *  This is a field.
      */
-    private int myTransactionId;
+    private Integer myTransactionId;
 
     /**
      *  This is a field.
@@ -58,7 +58,7 @@ public class Transaction {
     /**
      *  This is a field.
      */
-    private Double myAccountFrom;
+    private Integer myAccountFrom;
 
     /**
      * This is the constructor.
@@ -71,7 +71,7 @@ public class Transaction {
      * @param theAmount : The amount.
      * @param theBalanceAfter : The remaining balance in the account after the transaction.
      */
-    public Transaction(LocalDate theTransactionDate, String thePurchaser, String theVendor, String theDescription, String theCategory, Double theAmount, Double theBalanceAfter, Double theAccountFrom) {
+    public Transaction(LocalDate theTransactionDate, String thePurchaser, String theVendor, String theDescription, String theCategory, Double theAmount, Double theBalanceAfter, Integer theAccountFrom) {
         setMyTransactionDate(theTransactionDate);
         setMyPurchaser(thePurchaser);
         setMyVendor(theVendor);
@@ -88,7 +88,7 @@ public class Transaction {
      *
      * @param theAccountFrom
      */
-    public void setMyAccountFrom(Double theAccountFrom) {
+    public void setMyAccountFrom(Integer theAccountFrom) {
         myAccountFrom = theAccountFrom;
     }
 
@@ -244,7 +244,7 @@ public class Transaction {
      *
      * @return
      */
-    public Double getMyAccountFrom() {
+    public Integer getMyAccountFrom() {
         return myAccountFrom;
     }
 

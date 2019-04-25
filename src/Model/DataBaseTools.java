@@ -3,10 +3,8 @@
  */
 package Model;
 
-import animatefx.animation.FadeIn;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import view.SceneChanger;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -184,7 +182,7 @@ public class DataBaseTools {
                     result.getString("purchaser"), result.getString("vendor"),
                     result.getString("description"), result.getString("category"),
                     result.getDouble("amount"), result.getDouble("accountBalance"),
-                    result.getDouble("accountID"));
+                    result.getInt("accountID"));
 
             // Set the ID
             newTransaction.setMyTransactionId(result.getInt("itemId"));
@@ -198,6 +196,68 @@ public class DataBaseTools {
         result.close();
 
         return transactions;
+    }
+
+    /**
+     * This method updates the account information in the database.
+     *
+     * @param theItem : The name of the budget item user is looking for.
+     * @return : Returns a double of the value of that budget item.
+     */
+    public Double getBudgetItemValue(String theItem) {
+        ResultSet result = null;
+        Double returnResult = 0.0;
+        PreparedStatement preparedStatement = null;
+        String sql = "SELECT currentValue FROM budget WHERE itemName = ?";
+        preparedStatement = manageConnection(sql);
+        try {
+            preparedStatement.setString(1, theItem);
+            // Do the update
+            result = preparedStatement.executeQuery();
+            returnResult = result.getDouble("currentValue");
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return returnResult;
+    }
+
+    /**
+     *
+     * @param theDateLastPaid
+     * @param theItemName
+     * @param theCurrentV
+     * @param theBudgetedV
+     * @param theExpectedM
+     * @param theDueDate
+     * @param theNotes
+     */
+    public void insertBudgetItem(String sql, LocalDate theDateLastPaid, String theItemName, Double theCurrentV, Double theBudgetedV, Double theExpectedM, LocalDate theDueDate, String theNotes) {
+        PreparedStatement preparedStatement = null;
+        preparedStatement = manageConnection(sql);
+
+        Date dueDate = Date.valueOf(theDueDate);
+        Date dateLastPaid = Date.valueOf(theDateLastPaid);
+
+        try {
+            preparedStatement.setDate(1, dateLastPaid);
+            preparedStatement.setString(2, theItemName);
+            preparedStatement.setDouble(3, theCurrentV);
+            preparedStatement.setDouble(4, theBudgetedV);
+            preparedStatement.setDouble(5, theExpectedM);
+            preparedStatement.setDate(6, dueDate);
+            preparedStatement.setString(7, theNotes);
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // close things out
+            preparedStatement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -294,10 +354,21 @@ public class DataBaseTools {
         return account;
     }
 
-
-
-
-    public void updateTransactionInDb(String sql, int theId, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
+    /**
+     *
+     * @param sql
+     * @param theId
+     * @param theDate
+     * @param theP
+     * @param theV
+     * @param theDesc
+     * @param theCat
+     * @param theAmount
+     * @param theBal
+     * @param theAccId
+     * @throws SQLException
+     */
+    public void updateTransactionInDb(String sql, Integer theId, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Integer theAccId) throws SQLException{
         PreparedStatement preparedStatement = null;
 
         preparedStatement = manageConnection(sql);
@@ -311,7 +382,7 @@ public class DataBaseTools {
         preparedStatement.setString(5, theCat);
         preparedStatement.setDouble(6, theAmount);
         preparedStatement.setDouble(7, theBal);
-        preparedStatement.setDouble(8, theAccId);
+        preparedStatement.setInt(8, theAccId);
         preparedStatement.setInt(9, theId);
 
         // Do the update
@@ -323,19 +394,20 @@ public class DataBaseTools {
     }
 
     /**
+     * This method is responsible for handling insertion into the db.
      *
-     * @param sql
-     * @param theDate
-     * @param theP
-     * @param theV
-     * @param theDesc
-     * @param theCat
-     * @param theAmount
-     * @param theBal
-     * @param theAccId
-     * @throws SQLException
+     * @param sql : This is the sql to be screened.
+     * @param theDate : This is the date to be added.
+     * @param theP : This is the purchaser to be added.
+     * @param theV : This is the vendor to be added.
+     * @param theDesc : This is a description for the charge.
+     * @param theCat : This is the category that the charge falls in.
+     * @param theAmount : This is the amount that the charge is for.
+     * @param theBal : This is the account balance after the charge.
+     * @param theAccId : This is which account the charge will be applied to.
+     * @throws SQLException : In the event that something goes wrong.
      */
-    public void InsertTransactionInDb(String sql, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Double theAccId) throws SQLException{
+    public void InsertTransactionInDb(String sql, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Integer theAccId) throws SQLException{
         PreparedStatement preparedStatement = null;
 
         preparedStatement = manageConnection(sql);
@@ -354,10 +426,70 @@ public class DataBaseTools {
 
         // Do the update
         preparedStatement.execute();
+        applyChargeToAccount(theAccId, theAmount);
 
         // close things out
         preparedStatement.close();
 
+    }
+
+    /**
+     * This method updates the account information in the database.
+     *
+     * @param theId : The ID to be checked for updating.
+     * @param theCharge : The new account charge.
+     */
+    public void applyChargeToAccount(Integer theId, Double theCharge) {
+        // Get the current balance in that account
+        Double balance = 0.0;
+        try {
+            balance = getCurrentAccountBalance(theId);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        PreparedStatement preparedStatement = null;
+        String sql = "UPDATE accounts SET balance = ? WHERE itemId = ?";
+        preparedStatement = manageConnection(sql);
+        try {
+            preparedStatement.setDouble(1, balance - theCharge);
+            preparedStatement.setDouble(2, theId);
+
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * This method updates the account information in the database.
+     *
+     * @param  theCategory: The ID to be checked for updating.
+     * @param theCharge : The new account charge.
+     */
+    public void applyChargeToBudget(String theCategory, Double theCharge) {
+        // Get the current balance in that account
+        Double currentValue = getBudgetItemValue(theCategory);
+
+        PreparedStatement preparedStatement = null;
+        String sql = "UPDATE budget SET currentValue = ? WHERE itemName = ?";
+        preparedStatement = manageConnection(sql);
+        try {
+            preparedStatement.setDouble(1, currentValue - theCharge);
+            preparedStatement.setString(2, theCategory);
+
+            preparedStatement.execute();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -405,6 +537,7 @@ public class DataBaseTools {
         }
     }
 
+
     /**
      * This method updates the account information in the database.
      *
@@ -432,4 +565,56 @@ public class DataBaseTools {
             System.err.println(e.getMessage());
         }
     }
+
+    /**
+     * This method updates the account information in the database.
+     *
+     * @param theAccountBalance : The new account balance.
+     * @param theAccountType : The new account type.
+     */
+    public void insertAccount(String sql, Double theAccountBalance, String theAccountType) {
+        PreparedStatement preparedStatement = null;
+        preparedStatement = manageConnection(sql);
+
+        try {
+            preparedStatement.setDouble(1, theAccountBalance);
+            preparedStatement.setString(2, theAccountType);
+
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    /**
+     *
+     * @param theId
+     * @param theTable
+     * @param theIdName
+     */
+    public void deleteFromDb(Integer theId, String theTable, String theIdName) {
+        PreparedStatement preparedStatement = null;
+        String sql = "DELETE FROM " + theTable + " WHERE " + theIdName + " = ?";
+        preparedStatement = manageConnection(sql);
+
+        try {
+            preparedStatement.setInt(1, theId);
+
+            // Do the update
+            preparedStatement.executeUpdate();
+
+            // Close things out
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
 }

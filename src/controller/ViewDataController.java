@@ -48,6 +48,10 @@ public class ViewDataController implements Initializable {
     @FXML private Button myEditBtn;
 
     /**
+     * The edit button DELETES.
+     */
+    @FXML private Button myDeleteBtn;
+    /**
      *
      */
     @FXML private TabPane myPane;
@@ -145,6 +149,7 @@ public class ViewDataController implements Initializable {
 
         // Disable the edit button until row is selected.
         myEditBtn.setDisable(true);
+        myDeleteBtn.setDisable(true);
 
         // Set the search tab options
         myChoiceBox.getItems().add("Search Transactions by date");
@@ -262,6 +267,7 @@ public class ViewDataController implements Initializable {
      */
     public void rowHasBeenSelected() {
         myEditBtn.setDisable(false);
+        myDeleteBtn.setDisable(false);
     }
 
     /**
@@ -327,4 +333,42 @@ public class ViewDataController implements Initializable {
         }
         setTheTransactionTable(sql);
     }
+
+    /**
+     * This method handles the flow of control when the input data
+     * button is pushed.
+     *
+     * @param theEvent : This is the event.
+     */
+    public void deleteButtonPushed(ActionEvent theEvent) {
+        DataBaseTools dbTools = new DataBaseTools();
+
+        // Figure out which tab you are on.
+        if (mySelectedTab.equals(myTransactionsTab)) {
+            Integer transaction = myTransactionTable.getSelectionModel().getSelectedItem().getMyTransactionId();
+            dbTools.deleteFromDb(transaction, "transactions", "itemId");
+
+            //Reset
+            String sql = "SELECT * FROM transactions";
+            setTheTransactionTable(sql);
+
+        } else if (mySelectedTab.equals(myBudgetTab)) {
+            Integer selectedBudgetItem = myBudgetTable.getSelectionModel().getSelectedItem().getMyItemId();
+            dbTools.deleteFromDb(selectedBudgetItem, "budget", "itemId");
+
+            //Reset
+            myBudgetTable.getItems().clear();
+            setTheBudgetTable();
+
+        } else if (mySelectedTab.equals(myAccountTab)) {
+            // This is where everything for the budget view goes.
+            Integer selectedAccount = myAccountTable.getSelectionModel().getSelectedItem().getMyAccountId();
+            dbTools.deleteFromDb(selectedAccount, "accounts", "itemId");
+
+            //Reset
+            myAccountTable.getItems().clear();
+            setTheAccountTable();
+        }
+    }
+
 }

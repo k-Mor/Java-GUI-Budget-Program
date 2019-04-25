@@ -73,7 +73,7 @@ public class InputDataController implements Initializable {
      */
     public void createBudgetItemButtonPushed(ActionEvent theEvent) {
         SceneChanger sceneChanger = new SceneChanger();
-        sceneChanger.changeScene(theEvent, "SignUpView.fxml", "Sign up Page");
+        sceneChanger.changeScene(theEvent, "NewBudgetItem.fxml", "New Budget Item");
     }
 
     /**
@@ -84,7 +84,7 @@ public class InputDataController implements Initializable {
      */
     public void createAccountButtonPushed(ActionEvent theEvent) {
         SceneChanger sceneChanger = new SceneChanger();
-        sceneChanger.changeScene(theEvent, "SignUpView.fxml", "Sign up Page");
+        sceneChanger.changeScene(theEvent, "NewAccount.fxml", "New Account");
         }
 
     /**

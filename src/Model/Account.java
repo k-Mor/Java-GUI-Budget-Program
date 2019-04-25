@@ -68,6 +68,16 @@ public class Account {
 
     }
 
+    /**
+     *
+     */
+    public void insertAccountInDb() {
+        DataBaseTools dbTools = new DataBaseTools();
+        String sql = "INSERT INTO accounts (balance, type) VALUES (?,?)";
+        dbTools.insertAccount(sql, myAccountBalance, myAccountType);
+
+    }
+
     @Override
     public String toString() {
         return "Account{" +

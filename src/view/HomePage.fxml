@@ -26,7 +26,6 @@
             <Button fx:id="viewDataBtn" mnemonicParsing="false" onAction="#viewDataButtonPushed" prefHeight="1.0E8" prefWidth="200.0" styleClass="homePageMainButtons" text="View Data" />
             <Button fx:id="inputDataBtn" mnemonicParsing="false" onAction="#inputDataButtonPushed" prefHeight="1.0E8" prefWidth="200.0" styleClass="homePageMainButtons" text="Input Data" />
             <Button fx:id="generateReportsBtn" mnemonicParsing="false" onAction="#generateReportsButtonPushed" prefHeight="1.0E8" prefWidth="200.0" styleClass="homePageMainButtons" text="Generate Reports" />
-            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#editButtonPushed" prefHeight="1.0E8" prefWidth="200.0" styleClass="homePageMainButtons" text="Edit" />
             <Button fx:id="logOutBtn" mnemonicParsing="false" onAction="#logOutButtonPushed" prefHeight="1.0E8" prefWidth="200.0" styleClass="homePageMainButtons" text="Log Out" />
          </children>
          <padding>

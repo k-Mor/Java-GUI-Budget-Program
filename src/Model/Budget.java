@@ -230,6 +230,15 @@ public class Budget {
         dbTools.updateBudgetItemInDb(myItemId, myDateLastPaid, myItemName, myCurrentValue, myBudgetedValue, myExpectedMonthly, myDueDate, myItemNotes);
 
     }
+
+    /**
+     *
+     */
+    public void insertIntoDb() {
+        String sql = "INSERT INTO budget (dateLastPaid, itemName, currentValue, budgetedValue, expectedMonthlyValue, dueDate, itemNotes) VALUES (?,?,?,?,?,?,?)";
+        DataBaseTools dbTools = new DataBaseTools();
+        dbTools.insertBudgetItem(sql, myDateLastPaid, myItemName, myCurrentValue, myBudgetedValue, myExpectedMonthly, myDueDate, myItemNotes);
+    }
     /**
      * The overriden two string method.
      *
