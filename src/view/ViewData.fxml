@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
    <center>
       <TabPane fx:id="myPane" onMouseClicked="#selectedTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -122,20 +123,28 @@
                                  <children>
                                     <VBox spacing="25.0">
                                        <children>
-                                          <Label layoutX="28.0" layoutY="14.0" styleClass="LogInLabels" text="Amount Needed To Cover Expenses:" />
-                                          <Label layoutX="28.0" layoutY="146.0" styleClass="LogInLabels" text="TotalCash Withdrawal:" />
-                                          <Label layoutX="28.0" layoutY="190.0" styleClass="LogInLabels" text="Period Cash Flow:" />
-                                          <Label layoutX="28.0" layoutY="102.0" styleClass="LogInLabels" text="Monthly Expenses Vs. Income:" />
-                                          <Label layoutX="28.0" layoutY="58.0" styleClass="LogInLabels" text="Total Period Savings:" />
+                                          <Label fx:id="myAmountNeeded" layoutX="28.0" layoutY="14.0" styleClass="signUpPageMainLabels" text="Amount Needed To Cover Expenses:" />
+                                          <Label fx:id="myTotalCashWithdrawal" layoutX="28.0" layoutY="146.0" styleClass="signUpPageMainLabels" text="Total Cash Withdrawal:" />
+                                          <Label fx:id="myPeriodCashFlow" layoutX="28.0" layoutY="190.0" styleClass="signUpPageMainLabels" text="Period Cash Flow:" />
+                                          <Label fx:id="myMonthlyExpenses" layoutX="28.0" layoutY="102.0" styleClass="signUpPageMainLabels" text="Monthly Expenses Vs. Income:" />
+                                          <Label fx:id="myTotalPeriodSavings" layoutX="28.0" layoutY="58.0" styleClass="signUpPageMainLabels" text="Total Period Savings:" />
+                                          <Label fx:id="myTotalBudgeted" styleClass="signUpPageMainLabels" text="Total Budgeted:" />
+                                          <Label fx:id="myTotalCurrent" styleClass="signUpPageMainLabels" text="Total Current Values:" />
+                                          <Label fx:id="myTotalMonthly" styleClass="signUpPageMainLabels" text="Total Monthly Expenses:" />
+                                          <Label fx:id="myTotalMonthlyIncome" styleClass="signUpPageMainLabels" text="Total Monthly Income:" />
                                        </children>
                                     </VBox>
                                     <VBox spacing="25.0">
                                        <children>
-                                          <Label layoutX="722.0" layoutY="65.0" styleClass="LogInLabels" text="\$763" />
-                                          <Label layoutX="722.0" layoutY="21.0" styleClass="LogInLabels" text="\$0.00" />
-                                          <Label layoutX="726.0" layoutY="153.0" styleClass="LogInLabels" text="\$295.00" />
-                                          <Label layoutX="710.0" layoutY="109.0" styleClass="LogInLabels" text="-$0.50" />
-                                          <Label layoutX="711.0" layoutY="191.0" styleClass="LogInLabels" text="+$500" />
+                                          <Label fx:id="myAmount" layoutX="722.0" layoutY="65.0" styleClass="signUpPageMainLabels" text="\$763" />
+                                          <Label fx:id="myTotalCash" layoutX="722.0" layoutY="21.0" styleClass="signUpPageMainLabels" text="\$0.00" />
+                                          <Label fx:id="myPeriodCash" layoutX="726.0" layoutY="153.0" styleClass="signUpPageMainLabels" text="\$295.00" />
+                                          <Label fx:id="myMonthly" layoutX="710.0" layoutY="109.0" styleClass="signUpPageMainLabels" text="-$0.50" />
+                                          <Label fx:id="mySavings" layoutX="711.0" layoutY="191.0" styleClass="signUpPageMainLabels" text="+$500" />
+                                          <Label fx:id="myTotalBudgetedValue" styleClass="signUpPageMainLabels" text="500" />
+                                          <Label fx:id="myTotalCurrentValue" styleClass="signUpPageMainLabels" text="500" />
+                                          <Label fx:id="myTotalMonthlyValue" styleClass="signUpPageMainLabels" text="500" />
+                                          <Label fx:id="myTotalMonthlyIncomeValue" styleClass="signUpPageMainLabels" text="500" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -167,7 +176,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
             <Button fx:id="myEditBtn" mnemonicParsing="false" onAction="#editButtonPushedTransactions" styleClass="homePageMainButtons" text="Edit" />
-            <Button fx:id="myDeleteBtn" mnemonicParsing="false" onAction="#editButtonPushedTransactions" styleClass="homePageMainButtons" text="Delete" />
+            <Button fx:id="myDeleteBtn" mnemonicParsing="false" onAction="#deleteButtonPushed" styleClass="homePageMainButtons" text="Delete" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

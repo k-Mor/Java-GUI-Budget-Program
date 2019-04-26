@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 /**
@@ -18,6 +20,46 @@ import java.time.LocalDate;
  * @version : 2019-04-14
  */
 public class DataBaseTools {
+
+    /**
+     *
+     */
+    public static Double TOTAL_CURRENT_BUDGET_AMOUNT = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_BUDGET_AMOUNT = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_MONTHLY_EXPENSES = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_CASH_WITHDRAWAL = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_MONTHLY_INCOME = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_PERIOD_ONE_INCOME = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_PERIOD_TWO_INCOME = 0.0;
+
+    /**
+     *
+     */
+    public static Double TOTAL_PERIOD_SPENDING = 0.0;
 
     /**
      * This method is responsible for getting the connection to the db,
@@ -184,12 +226,38 @@ public class DataBaseTools {
                     result.getDouble("amount"), result.getDouble("accountBalance"),
                     result.getInt("accountID"));
 
+            // Get the total monthly income and the period incomes based on month and day.
+            if (newTransaction.getMyCategory().equals("income")) {
+                TOTAL_MONTHLY_INCOME += newTransaction.getMyAmount();
+            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
+                    newTransaction.getMyTransactionDate().getDayOfMonth() < 15
+                    && newTransaction.getMyCategory().equals("income")) {
+                TOTAL_PERIOD_ONE_INCOME += newTransaction.getMyAmount();
+            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
+                    newTransaction.getMyTransactionDate().getDayOfMonth() >= 15
+                    && newTransaction.getMyCategory().equals("income")) {
+                System.out.println(newTransaction.toString());
+                TOTAL_PERIOD_TWO_INCOME += newTransaction.getMyAmount();
+
+            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
+                newTransaction.getMyTransactionDate().getDayOfMonth() < 15
+                && newTransaction.getMyCategory().equals("income")) {
+                TOTAL_PERIOD_SPENDING += java.lang.Math.abs(newTransaction.getMyAmount());
+            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
+                newTransaction.getMyTransactionDate().getDayOfMonth() >= 15
+                && !newTransaction.getMyCategory().equals("income")) {
+                TOTAL_PERIOD_SPENDING += java.lang.Math.abs(newTransaction.getMyAmount());
+        }
             // Set the ID
             newTransaction.setMyTransactionId(result.getInt("itemId"));
 
             // Add to the list to be returned
             transactions.add(newTransaction);
         }
+
+        // Subtract the expenses from the period
+        TOTAL_PERIOD_ONE_INCOME = TOTAL_PERIOD_ONE_INCOME - TOTAL_PERIOD_SPENDING;
+        TOTAL_PERIOD_TWO_INCOME = TOTAL_PERIOD_TWO_INCOME - TOTAL_PERIOD_SPENDING;
 
         // Close things out
         preparedStatement.close();
@@ -291,6 +359,11 @@ public class DataBaseTools {
                         result.getString("itemName"), result.getDouble("currentValue"),
                         result.getDouble("budgetedValue"), result.getDouble("expectedMonthlyValue"),
                         result.getDate("dueDate").toLocalDate(), result.getString("itemNotes"));
+
+                // Get the totals for the constants
+                TOTAL_CURRENT_BUDGET_AMOUNT += newBudget.getMyCurrentValue();
+                TOTAL_BUDGET_AMOUNT += newBudget.getMyBudgetedValue();
+                TOTAL_MONTHLY_EXPENSES += newBudget.getMyExpectedMonthly();
 
                 // Set the ID
                 newBudget.setMyItemId(result.getInt("itemId"));

@@ -63,6 +63,32 @@ public class ViewDataController implements Initializable {
     @FXML private TextField myKeyword;
 
     /**
+     * Labels for the insights tab
+     */
+    @FXML private Label myAmountNeeded;
+    @FXML private Label myTotalCashWithdrawal;
+    @FXML private Label myPeriodCashFlow;
+    @FXML private Label myMonthlyExpenses;
+    @FXML private Label myTotalPeriodSavings;
+    @FXML private Label myTotalBudgeted;
+    @FXML private Label myTotalCurrent;
+    @FXML private Label myTotalMonthly;
+    @FXML private Label myTotalMonthlyIncome;
+
+    /**
+     * Labels for the insights tab
+     */
+    @FXML private Label myAmount;
+    @FXML private Label myTotalCash;
+    @FXML private Label myPeriodCash;
+    @FXML private Label myMonthly;
+    @FXML private Label mySavings;
+    @FXML private Label myTotalBudgetedValue;
+    @FXML private Label myTotalCurrentValue;
+    @FXML private Label myTotalMonthlyValue;
+    @FXML private Label myTotalMonthlyIncomeValue;
+
+    /**
      * The table tabs
      */
     @FXML private Tab myTransactionsTab;
@@ -128,6 +154,7 @@ public class ViewDataController implements Initializable {
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
+        DataBaseTools dbTools = new DataBaseTools();
         mySelectedTab = myTransactionsTab;
         // Set the transactions up
         String sql = "SELECT * FROM transactions";
@@ -138,6 +165,55 @@ public class ViewDataController implements Initializable {
 
         // Set the accounts up
         setTheAccountTable();
+
+        // Set the insights labels
+        Double amountNeeded = 0.0;
+        Double totalBudgetedValue = 0.0;
+        Double totalCurrentValue = 0.0;
+        Double totalMonthlyValue = 0.0;
+        Double totalMonthlyIncome = 0.0;
+//        @FXML private Label myAmount;
+//        @FXML private Label myTotalCash;
+//        @FXML private Label myPeriodCash;
+//        @FXML private Label myMonthly;
+//        @FXML private Label mySavings;
+//        @FXML private Label myTotalBudgetedValue;
+//        @FXML private Label myTotalCurrentValue;
+//        @FXML private Label myTotalMonthlyValue;
+//        @FXML private Label myTotalMonthlyIncomeValue;
+
+        try {
+            amountNeeded = dbTools.getCurrentAccountBalance(1) -
+                    DataBaseTools.TOTAL_CURRENT_BUDGET_AMOUNT;
+            totalBudgetedValue = DataBaseTools.TOTAL_BUDGET_AMOUNT;
+            totalCurrentValue = DataBaseTools.TOTAL_CURRENT_BUDGET_AMOUNT;
+            totalMonthlyValue = DataBaseTools.TOTAL_MONTHLY_EXPENSES;
+            totalMonthlyIncome = DataBaseTools.TOTAL_MONTHLY_INCOME;
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        // My amount needed to cover expenses
+        myAmount.setText(String.format("$%,2.2f", amountNeeded));
+        // Total cash withdrawal
+        //TODO
+
+        // Period cash flow
+        if (LocalDate.now().getDayOfMonth() < 15) {
+            myPeriodCash.setText(String.format("$%,2.2f",
+                    DataBaseTools.TOTAL_PERIOD_ONE_INCOME));
+        } else {
+            myPeriodCash.setText(String.format("$%,2.2f",
+                    DataBaseTools.TOTAL_PERIOD_TWO_INCOME));
+        }
+        // Total budgeted values
+        myTotalBudgetedValue.setText(String.format("$%,2.2f", totalBudgetedValue));
+        // Total currently budgeted values
+        myTotalCurrentValue.setText(String.format("$%,2.2f", totalCurrentValue));
+        // Total monthly amount of money to be spent
+        myTotalMonthlyValue.setText(String.format("$%,2.2f", totalMonthlyValue));
+        // Total monthly income.
+        myTotalMonthlyIncome.setText(String.format("$%,2.2f", totalMonthlyIncome));
 
         // set the time and date
         OtherTools ot = new OtherTools();
