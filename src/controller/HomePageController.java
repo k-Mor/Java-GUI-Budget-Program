@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import Model.DataBaseTools;
 import Model.OtherTools;
-import animatefx.animation.FadeIn;
-import animatefx.animation.FadeOut;
 import animatefx.animation.Flash;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,7 +44,7 @@ public class HomePageController implements Initializable {
     /**
      * This is a field that shows the cash flow from year to date.
      */
-    @FXML private Text yearToDate;
+    @FXML private Text expensesVsIncome;
 
     /**
      * This is a field that connects the header for
@@ -128,6 +126,10 @@ public class HomePageController implements Initializable {
         Date theDate = new Date();
         date.setText(dateFormat.format(theDate));
 
+        Double allIncome = 0.0;
+        Double allExpenses = 0.0;
+        Double currentMonthIncome = 0.0;
+        Double expenses = 0.0;
         // Set the account balance
         try {
             double money = dataBaseTools.getCurrentAccountBalance(myChosenAccount);
@@ -135,14 +137,19 @@ public class HomePageController implements Initializable {
             String currentBalance = String.format("$%,.2f", money);
             moneyDisplay.setText(currentBalance);
             accountTypeLabel.setText(type);
-
+            dataBaseTools.getTheTransactionList("SELECT * FROM transactions");
+            dataBaseTools.getTheBudget();
+            allIncome = dataBaseTools.getMyAllIncome();
+            allExpenses = dataBaseTools.getMyAllExpenses();
+            currentMonthIncome = dataBaseTools.getMyTotalPeriodOneIncome() + dataBaseTools.getMyTotalPeriodTwoIncome();
+            expenses = Math.abs(dataBaseTools.getMyTotalPeriodOneSpending() + dataBaseTools.getMyTotalPeriodTwoSpending());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
 
         // Set the percents
-        averagePeriodSpending.setText("+15.0%");
-        yearToDate.setText("+3.4%");
+        averagePeriodSpending.setText(String.format("%10.2f%%", (currentMonthIncome / expenses) * 100));
+        expensesVsIncome.setText(String.format("%10.2f%%", (allIncome / allExpenses) * 100));
 
         // Populate the graph
         graphLbl.setText("Test");
@@ -182,17 +189,6 @@ public class HomePageController implements Initializable {
     public void generateReportsButtonPushed(ActionEvent theEvent) {
         SceneChanger sceneChanger = new SceneChanger();
         sceneChanger.changeScene(theEvent, "GenerateReportView.fxml", "Generate Reports");
-    }
-
-    /**
-     * This method handles the flow of control when the edit button is
-     * pushed.
-     *
-     * @param theEvent : This is the event.
-     */
-    public void editButtonPushed(ActionEvent theEvent) {
-        SceneChanger sceneChanger = new SceneChanger();
-        sceneChanger.changeScene(theEvent, "EditView.fxml", "Edit");
     }
 
     /**

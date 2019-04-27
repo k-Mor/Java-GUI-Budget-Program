@@ -4,6 +4,7 @@
 package controller;
 
 import Model.Account;
+import Model.AscendingOrder;
 import Model.DataBaseTools;
 import Model.Transaction;
 import animatefx.animation.FadeIn;
@@ -24,9 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * This class is the controller for the NewTransaction.FXML file.
@@ -34,13 +33,15 @@ import java.util.ResourceBundle;
  * @author : Kaleb
  * @version : 2019-04-10
  */
-public class NewTransactionViewController implements Initializable {
+public class NewTransactionViewController implements Initializable, AscendingOrder<Transaction> {
 
     /**
      * This is the actual transaction object that is captured when
      * a user selects a line item in the transaction table.
      */
     private Transaction myTransaction;
+
+    private List<Transaction> myTransactionList;
 
     /**
      * These are textFields for the form which allows edits.
@@ -64,6 +65,7 @@ public class NewTransactionViewController implements Initializable {
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
+        myTransactionList = new LinkedList<>();
         DataBaseTools dbTools = new DataBaseTools();
         try {
             ObservableList<Account> accounts = dbTools.getTheAccounts();
@@ -90,12 +92,42 @@ public class NewTransactionViewController implements Initializable {
         // Validate the fields
         //TODO
 
-        // First updates the actual object
+        // Create the transaction
         createNewTransaction();
 
         // Tell the user
-        myLbl.setText("Charge successfully recorded!");
+        myLbl.setText("Charge successfully saved, don't forget to commit!");
         new FadeIn(myLbl).play();
+    }
+
+    /**
+     *
+     */
+    public void commitButtonPushed() {
+        int cnt = 0;
+        for (Transaction trans: myTransactionList) {
+            if (compareTo(trans) < 0) {
+                trans.insertTransactionInDb();
+            } else if (compareTo(trans) > 0) {
+
+            }
+            cnt++;
+            myLbl.setText(cnt + " Charges committed out of: " + myTransactionList.size());
+        }
+    }
+
+    /**
+     *
+     * @param trans
+     * @return
+     */
+    public int compareTo(Transaction trans) {
+        if (myTransaction.getMyTransactionId() < trans.getMyTransactionId()) {
+            return -1;
+        } else if (myTransaction.getMyTransactionId() > trans.getMyTransactionId()){
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -142,10 +174,7 @@ public class NewTransactionViewController implements Initializable {
                 myCategory.getText(), Double.valueOf(myAmount.getText()),
                 balance, theId);
 
-        // Insert it.
-        myTransaction.insertTransactionInDb();
-
-        //update the budget
-        dbTools.applyChargeToBudget(myCategory.getText(), Double.valueOf(myAmount.getText()));
+        //Add to the list
+        myTransactionList.add(myTransaction);
     }
 }

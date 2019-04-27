@@ -81,12 +81,13 @@ public class ViewDataController implements Initializable {
     @FXML private Label myAmount;
     @FXML private Label myTotalCash;
     @FXML private Label myPeriodCash;
-    @FXML private Label myMonthly;
+    @FXML private Label myMonthlyVs;
     @FXML private Label mySavings;
     @FXML private Label myTotalBudgetedValue;
     @FXML private Label myTotalCurrentValue;
-    @FXML private Label myTotalMonthlyValue;
+    @FXML private Label myTotalMonthlyExpensesValue;
     @FXML private Label myTotalMonthlyIncomeValue;
+    @FXML private Label myPeriod;
 
     /**
      * The table tabs
@@ -154,66 +155,22 @@ public class ViewDataController implements Initializable {
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
-        DataBaseTools dbTools = new DataBaseTools();
         mySelectedTab = myTransactionsTab;
+        // Get an instance of the dbTools
+        DataBaseTools dbTools = new DataBaseTools();
+
         // Set the transactions up
         String sql = "SELECT * FROM transactions";
-        setTheTransactionTable(sql);
+        setTheTransactionTable(dbTools, sql);
 
         // set the budget up
-        setTheBudgetTable();
+        setTheBudgetTable(dbTools);
+
+        // Set up insights
+        populateTheInsightTab(dbTools);
 
         // Set the accounts up
-        setTheAccountTable();
-
-        // Set the insights labels
-        Double amountNeeded = 0.0;
-        Double totalBudgetedValue = 0.0;
-        Double totalCurrentValue = 0.0;
-        Double totalMonthlyValue = 0.0;
-        Double totalMonthlyIncome = 0.0;
-//        @FXML private Label myAmount;
-//        @FXML private Label myTotalCash;
-//        @FXML private Label myPeriodCash;
-//        @FXML private Label myMonthly;
-//        @FXML private Label mySavings;
-//        @FXML private Label myTotalBudgetedValue;
-//        @FXML private Label myTotalCurrentValue;
-//        @FXML private Label myTotalMonthlyValue;
-//        @FXML private Label myTotalMonthlyIncomeValue;
-
-        try {
-            amountNeeded = dbTools.getCurrentAccountBalance(1) -
-                    DataBaseTools.TOTAL_CURRENT_BUDGET_AMOUNT;
-            totalBudgetedValue = DataBaseTools.TOTAL_BUDGET_AMOUNT;
-            totalCurrentValue = DataBaseTools.TOTAL_CURRENT_BUDGET_AMOUNT;
-            totalMonthlyValue = DataBaseTools.TOTAL_MONTHLY_EXPENSES;
-            totalMonthlyIncome = DataBaseTools.TOTAL_MONTHLY_INCOME;
-
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        // My amount needed to cover expenses
-        myAmount.setText(String.format("$%,2.2f", amountNeeded));
-        // Total cash withdrawal
-        //TODO
-
-        // Period cash flow
-        if (LocalDate.now().getDayOfMonth() < 15) {
-            myPeriodCash.setText(String.format("$%,2.2f",
-                    DataBaseTools.TOTAL_PERIOD_ONE_INCOME));
-        } else {
-            myPeriodCash.setText(String.format("$%,2.2f",
-                    DataBaseTools.TOTAL_PERIOD_TWO_INCOME));
-        }
-        // Total budgeted values
-        myTotalBudgetedValue.setText(String.format("$%,2.2f", totalBudgetedValue));
-        // Total currently budgeted values
-        myTotalCurrentValue.setText(String.format("$%,2.2f", totalCurrentValue));
-        // Total monthly amount of money to be spent
-        myTotalMonthlyValue.setText(String.format("$%,2.2f", totalMonthlyValue));
-        // Total monthly income.
-        myTotalMonthlyIncome.setText(String.format("$%,2.2f", totalMonthlyIncome));
+        setTheAccountTable(dbTools);
 
         // set the time and date
         OtherTools ot = new OtherTools();
@@ -239,10 +196,73 @@ public class ViewDataController implements Initializable {
     }
 
     /**
+     *
+     */
+    public void populateTheInsightTab(DataBaseTools dbTools) {
+        // Set the insights labels
+        Double amountNeeded = 0.0;
+        Double totalBudgetedValue = 0.0;
+        Double totalCurrentValue = 0.0;
+        Double totalMonthlyValue = 0.0;
+        Double totalMonthlyIncome = 0.0;
+        Double currentAccountBalance = 0.0;
+        Double totalCash = 0.0;
+
+
+        try {
+            myPeriod.setText("Current Period: " + dbTools.getMyCurrentPeriod());
+            amountNeeded = dbTools.getCurrentAccountBalance(1) -
+                    dbTools.getMyTotalCurrentBudgetAmount();
+            totalCash = dbTools.getMyCashItems();
+            totalBudgetedValue = dbTools.getMyBudgetAmount();
+            totalCurrentValue = dbTools.getMyTotalCurrentBudgetAmount();
+            totalMonthlyValue = dbTools.getMyTotalMonthlyExpenses();
+            totalMonthlyIncome = dbTools.getMyTotalMonthlyIncome();
+            currentAccountBalance = dbTools.getCurrentAccountBalance(1);
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        Double savings = currentAccountBalance - totalCurrentValue;
+        // My amount needed to cover expenses
+        if (amountNeeded > 0) {
+            amountNeeded = 0.0;
+        }
+        myAmount.setText(String.format("$%,2.2f", Math.abs(amountNeeded)));
+        // Total cash withdrawal
+        myTotalCash.setText(String.format("$%,2.2f",totalCash));
+
+        // Period cash flow
+        if (LocalDate.now().getDayOfMonth() < 15) {
+            myPeriodCash.setText(String.format("$%,2.2f",
+                    dbTools.getMyTotalPeriodOneIncome()));
+        } else {
+            myPeriodCash.setText(String.format("$%,2.2f",
+                    dbTools.getMyTotalPeriodTwoIncome()));
+        }
+        // Monthly expenses Vs. Income
+        myMonthlyVs.setText(String.format("$%,2.2f", totalMonthlyIncome - totalMonthlyValue));
+        //See the savings
+
+        if (savings < 0.0) {
+            savings = 0.0;
+        }
+        mySavings.setText(String.format("$%,2.2f", savings));
+        // Total budgeted values
+        myTotalBudgetedValue.setText(String.format("$%,2.2f", totalBudgetedValue));
+        // Total currently budgeted values
+        myTotalCurrentValue.setText(String.format("$%,2.2f", totalCurrentValue));
+        // Total monthly amount of money to be spent
+        myTotalMonthlyExpensesValue.setText(String.format("$%,2.2f", totalMonthlyValue));
+        // Total monthly income.
+        myTotalMonthlyIncomeValue.setText(String.format("$%,2.2f", totalMonthlyIncome));
+    }
+
+    /**
      * This method is responsible for assigning the table cells to the
      * fields in the Transaction class.
      */
-    public void setTheTransactionTable(String theSQL) {
+    public void setTheTransactionTable(DataBaseTools dbTools, String theSQL) {
         // Configure the Transaction table columns
         myTransactionIDColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myTransactionId"));
         myTransactionDateColumn.setCellValueFactory(new PropertyValueFactory<Transaction, LocalDate>("myTransactionDate"));
@@ -266,8 +286,6 @@ public class ViewDataController implements Initializable {
         mySearchedFromAccountColumn.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("myAccountFrom"));
 
         try {
-            // Get a new instance of the dbtools.
-            DataBaseTools dbTools = new DataBaseTools();
             // Adds all of the newly created transactions to the transaction table.
             if (mySelectedTab.equals(mySearchTab)) {
                 mySearchTable.getItems().addAll(dbTools.getTheTransactionList(theSQL));
@@ -284,7 +302,7 @@ public class ViewDataController implements Initializable {
      * This method is responsible for assigning the table cells to the
      * fields in the Budget class.
      */
-    public void setTheBudgetTable() {
+    public void setTheBudgetTable(DataBaseTools dbTools) {
         // Configure the table columns
         myBudgetIDColumn.setCellValueFactory(new PropertyValueFactory<Budget, Integer>("myItemId"));
         myDateLastPaidColumn.setCellValueFactory(new PropertyValueFactory<Budget, LocalDate>("myDateLastPaid"));
@@ -296,8 +314,6 @@ public class ViewDataController implements Initializable {
         myNotesColumn.setCellValueFactory(new PropertyValueFactory<Budget, String>("myItemNotes"));
 
         try {
-            // Get a new instance of the dbtools.
-            DataBaseTools dbTools = new DataBaseTools();
 
             // Adds all of the newly created transactions to the transaction table.
             myBudgetTable.getItems().addAll(dbTools.getTheBudget());
@@ -310,16 +326,13 @@ public class ViewDataController implements Initializable {
      * This method is responsible for assigning the table cells to the
      * fields in the Budget class.
      */
-    public void setTheAccountTable() {
+    public void setTheAccountTable(DataBaseTools dbTools) {
         // Configure the table columns
         myAccountIDColumn.setCellValueFactory(new PropertyValueFactory<Account, Integer>("myAccountId"));
         myAccountBalanceColumn.setCellValueFactory(new PropertyValueFactory<Account, Double>("myAccountBalance"));
         myAccountTypeColumn.setCellValueFactory(new PropertyValueFactory<Account, String>("myAccountType"));
 
         try {
-            // Get a new instance of the dbtools.
-            DataBaseTools dbTools = new DataBaseTools();
-
             // Adds all of the newly created transactions to the transaction table.
             myAccountTable.getItems().addAll(dbTools.getTheAccounts());
         } catch (SQLException e) {
@@ -380,6 +393,7 @@ public class ViewDataController implements Initializable {
     }
 
     public void searchButtonPushed(ActionEvent theEvent) {
+        DataBaseTools dbTools = new DataBaseTools();
         mySelectedTab = mySearchTab;
         String value = myChoiceBox.getValue();
         mySearchTable.getItems().clear();
@@ -407,7 +421,7 @@ public class ViewDataController implements Initializable {
         } else if (value == "Search Transactions by Description"){
             sql = "SELECT * FROM transactions WHERE description LIKE '%" + myKeyword.getText() + "%'";
         }
-        setTheTransactionTable(sql);
+        setTheTransactionTable(dbTools, sql);
     }
 
     /**
@@ -426,7 +440,7 @@ public class ViewDataController implements Initializable {
 
             //Reset
             String sql = "SELECT * FROM transactions";
-            setTheTransactionTable(sql);
+            setTheTransactionTable(dbTools, sql);
 
         } else if (mySelectedTab.equals(myBudgetTab)) {
             Integer selectedBudgetItem = myBudgetTable.getSelectionModel().getSelectedItem().getMyItemId();
@@ -434,7 +448,7 @@ public class ViewDataController implements Initializable {
 
             //Reset
             myBudgetTable.getItems().clear();
-            setTheBudgetTable();
+            setTheBudgetTable(dbTools);
 
         } else if (mySelectedTab.equals(myAccountTab)) {
             // This is where everything for the budget view goes.
@@ -443,7 +457,7 @@ public class ViewDataController implements Initializable {
 
             //Reset
             myAccountTable.getItems().clear();
-            setTheAccountTable();
+            setTheAccountTable(dbTools);
         }
     }
 

@@ -47,11 +47,11 @@
                <children>
                   <VBox alignment="TOP_CENTER" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <Text fx:id="averagePeriodSpending" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="-5%">
+                        <Text fx:id="averagePeriodSpending" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="-5%">
                            <font>
                               <Font size="24.0" />
                            </font></Text>
-                        <Text fx:id="yearToDate" fill="#04ff10" strokeType="OUTSIDE" strokeWidth="0.0" text="+5%">
+                        <Text fx:id="expensesVsIncome" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="+5%">
                            <font>
                               <Font size="24.0" />
                            </font></Text>
@@ -59,8 +59,8 @@
                   </VBox>
                   <VBox prefWidth="314.0" spacing="10.0">
                      <children>
-                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="Average period spending" />
-                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="Year to date in vs. out" />
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text=" Of period income spent" />
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="Year to date income spent" />
                      </children>
                   </VBox>
                </children>

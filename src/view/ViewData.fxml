@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
@@ -18,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewDataController">
    <center>
       <TabPane fx:id="myPane" onMouseClicked="#selectedTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -119,7 +125,7 @@
                      <children>
                         <AnchorPane>
                            <children>
-                              <HBox layoutX="28.0" layoutY="14.0" prefHeight="474.0" prefWidth="1000.0" spacing="50.0" styleClass="backgroundPrimary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <HBox alignment="TOP_CENTER" layoutX="28.0" layoutY="14.0" prefHeight="474.0" prefWidth="1000.0" spacing="50.0" styleClass="backgroundPrimary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <VBox spacing="25.0">
                                        <children>
@@ -139,14 +145,15 @@
                                           <Label fx:id="myAmount" layoutX="722.0" layoutY="65.0" styleClass="signUpPageMainLabels" text="\$763" />
                                           <Label fx:id="myTotalCash" layoutX="722.0" layoutY="21.0" styleClass="signUpPageMainLabels" text="\$0.00" />
                                           <Label fx:id="myPeriodCash" layoutX="726.0" layoutY="153.0" styleClass="signUpPageMainLabels" text="\$295.00" />
-                                          <Label fx:id="myMonthly" layoutX="710.0" layoutY="109.0" styleClass="signUpPageMainLabels" text="-$0.50" />
+                                          <Label fx:id="myMonthlyVs" layoutX="710.0" layoutY="109.0" styleClass="signUpPageMainLabels" text="-$0.50" />
                                           <Label fx:id="mySavings" layoutX="711.0" layoutY="191.0" styleClass="signUpPageMainLabels" text="+$500" />
                                           <Label fx:id="myTotalBudgetedValue" styleClass="signUpPageMainLabels" text="500" />
                                           <Label fx:id="myTotalCurrentValue" styleClass="signUpPageMainLabels" text="500" />
-                                          <Label fx:id="myTotalMonthlyValue" styleClass="signUpPageMainLabels" text="500" />
+                                          <Label fx:id="myTotalMonthlyExpensesValue" styleClass="signUpPageMainLabels" text="500" />
                                           <Label fx:id="myTotalMonthlyIncomeValue" styleClass="signUpPageMainLabels" text="500" />
                                        </children>
                                     </VBox>
+                                    <Label fx:id="myPeriod" alignment="CENTER" contentDisplay="CENTER" styleClass="LogInLabels" text="Current Period: 2" />
                                  </children>
                               </HBox>
                            </children>

@@ -7,8 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 /**
@@ -24,42 +22,64 @@ public class DataBaseTools {
     /**
      *
      */
-    public static Double TOTAL_CURRENT_BUDGET_AMOUNT = 0.0;
+    private  Double myTotalCurrentBudgetAmount = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_BUDGET_AMOUNT = 0.0;
+    private  Double myBudgetAmount = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_MONTHLY_EXPENSES = 0.0;
+    private  Double myTotalMonthlyExpenses = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_CASH_WITHDRAWAL = 0.0;
+    private  Double myTotalMonthlyIncome = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_MONTHLY_INCOME = 0.0;
+    private  Double myTotalPeriodOneIncome = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_PERIOD_ONE_INCOME = 0.0;
+    private  Double myTotalPeriodTwoIncome = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_PERIOD_TWO_INCOME = 0.0;
+    private  Double myTotalPeriodOneSpending = 0.0;
 
     /**
      *
      */
-    public static Double TOTAL_PERIOD_SPENDING = 0.0;
+    private  Double myTotalPeriodTwoSpending = 0.0;
+
+    /**
+     *
+     */
+    private  Integer myCurrentPeriod = 0;
+
+    /**
+     *
+     */
+    private  Double myCashItems = 0.0;
+
+    /**
+     *
+     */
+    private  Double myAllIncome = 0.0;
+
+    /**
+     *
+     */
+    private  Double myAllExpenses = 0.0;
+
+
 
     /**
      * This method is responsible for getting the connection to the db,
@@ -69,6 +89,12 @@ public class DataBaseTools {
      * @return : PreparedStatement that the calling program manipulates
      */
     private PreparedStatement manageConnection(String theSql) {
+        // Set the period every time the database is interacted with
+        if (LocalDate.now().getDayOfMonth() < 15) {
+            myCurrentPeriod = 1;
+        } else {
+            myCurrentPeriod = 2;
+        }
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -80,7 +106,7 @@ public class DataBaseTools {
             preparedStatement = connection.prepareStatement(theSql);
 
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + "POOP");
         }
         return preparedStatement;
     }
@@ -225,39 +251,38 @@ public class DataBaseTools {
                     result.getString("description"), result.getString("category"),
                     result.getDouble("amount"), result.getDouble("accountBalance"),
                     result.getInt("accountID"));
-
-            // Get the total monthly income and the period incomes based on month and day.
+            if (!newTransaction.getMyCategory().equals("medical & dental")) {
+                myAllExpenses += newTransaction.getMyAmount();
+            }
             if (newTransaction.getMyCategory().equals("income")) {
-                TOTAL_MONTHLY_INCOME += newTransaction.getMyAmount();
-            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
-                    newTransaction.getMyTransactionDate().getDayOfMonth() < 15
-                    && newTransaction.getMyCategory().equals("income")) {
-                TOTAL_PERIOD_ONE_INCOME += newTransaction.getMyAmount();
-            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
-                    newTransaction.getMyTransactionDate().getDayOfMonth() >= 15
-                    && newTransaction.getMyCategory().equals("income")) {
-                System.out.println(newTransaction.toString());
-                TOTAL_PERIOD_TWO_INCOME += newTransaction.getMyAmount();
-
-            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
-                newTransaction.getMyTransactionDate().getDayOfMonth() < 15
-                && newTransaction.getMyCategory().equals("income")) {
-                TOTAL_PERIOD_SPENDING += java.lang.Math.abs(newTransaction.getMyAmount());
-            } else if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth() &&
-                newTransaction.getMyTransactionDate().getDayOfMonth() >= 15
-                && !newTransaction.getMyCategory().equals("income")) {
-                TOTAL_PERIOD_SPENDING += java.lang.Math.abs(newTransaction.getMyAmount());
-        }
+                myAllIncome += newTransaction.getMyAmount();
+            }
+            if (newTransaction.getMyTransactionDate().getMonth() == LocalDate.now().getMonth()) {
+                if (newTransaction.getMyTransactionDate().getDayOfMonth() < 15) {
+                    if (!newTransaction.getMyCategory().equals("income")) {
+                        myTotalPeriodOneSpending += java.lang.Math.abs(newTransaction.getMyAmount());
+                    }
+                    if (newTransaction.getMyCategory().equals("income")) {
+                        myTotalPeriodOneIncome += newTransaction.getMyAmount();
+                    }
+                }
+                if (newTransaction.getMyTransactionDate().getDayOfMonth() >= 15) {
+                    if (!newTransaction.getMyCategory().equals("income")) {
+                        myTotalPeriodTwoSpending += java.lang.Math.abs(newTransaction.getMyAmount());
+                    }
+                    if (newTransaction.getMyCategory().equals("income")) {
+                        myTotalPeriodTwoIncome += newTransaction.getMyAmount();
+                    }
+                }
+            }
             // Set the ID
             newTransaction.setMyTransactionId(result.getInt("itemId"));
 
             // Add to the list to be returned
             transactions.add(newTransaction);
         }
-
-        // Subtract the expenses from the period
-        TOTAL_PERIOD_ONE_INCOME = TOTAL_PERIOD_ONE_INCOME - TOTAL_PERIOD_SPENDING;
-        TOTAL_PERIOD_TWO_INCOME = TOTAL_PERIOD_TWO_INCOME - TOTAL_PERIOD_SPENDING;
+        // Set total monthly income
+        myTotalMonthlyIncome = myTotalPeriodOneIncome + myTotalPeriodTwoIncome;
 
         // Close things out
         preparedStatement.close();
@@ -349,7 +374,7 @@ public class DataBaseTools {
 
         // Execute the query
         result = preparedStatement.executeQuery();
-
+        String[] cashItems= {"groceries", "allowance", "fuel", "home needs", "date night", "wishlist"};
         while (result.next()) {
 
             // Create a new transaction
@@ -360,10 +385,19 @@ public class DataBaseTools {
                         result.getDouble("budgetedValue"), result.getDouble("expectedMonthlyValue"),
                         result.getDate("dueDate").toLocalDate(), result.getString("itemNotes"));
 
+                // Populate the cash withdrawal field in the view data view
+                String name = newBudget.getMyItemName();
+                for (String item: cashItems) {
+                    if (name.equals(item)) {
+                        myCashItems += newBudget.getMyCurrentValue();
+                    }
+                }
                 // Get the totals for the constants
-                TOTAL_CURRENT_BUDGET_AMOUNT += newBudget.getMyCurrentValue();
-                TOTAL_BUDGET_AMOUNT += newBudget.getMyBudgetedValue();
-                TOTAL_MONTHLY_EXPENSES += newBudget.getMyExpectedMonthly();
+                myTotalCurrentBudgetAmount += newBudget.getMyCurrentValue();
+                myBudgetAmount += newBudget.getMyBudgetedValue();
+                if (!newBudget.getMyItemName().equals("medical & dental")) {
+                    myTotalMonthlyExpenses += newBudget.getMyExpectedMonthly();
+                }
 
                 // Set the ID
                 newBudget.setMyItemId(result.getInt("itemId"));
@@ -487,6 +521,9 @@ public class DataBaseTools {
 
         Date date = Date.valueOf(theDate);
 
+        if (theCat.equals("income")) {
+            theBal = theBal + theAmount;
+        }
         preparedStatement.setDate(1, date);
         preparedStatement.setString(2, theP);
         preparedStatement.setString(3, theV);
@@ -495,14 +532,31 @@ public class DataBaseTools {
         preparedStatement.setDouble(6, theAmount);
         preparedStatement.setDouble(7, theBal);
         preparedStatement.setDouble(8, theAccId);
-//        preparedStatement.setInt(9, theId);
 
-        // Do the update
+        // Enter the transaction
         preparedStatement.execute();
-        applyChargeToAccount(theAccId, theAmount);
 
-        // close things out
+        // Do the account update
+        preparedStatement = manageConnection("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
+        preparedStatement.setDouble(1, theAmount);
+        preparedStatement.setInt(2,theAccId);
+
+        preparedStatement.executeUpdate();
+
+
+        preparedStatement = manageConnection("UPDATE budget SET currentValue = ? WHERE itemName = ?");
+        preparedStatement.setDouble(1, getBudgetItemValue(theCat) - theAmount);
+        preparedStatement.setString(2,theCat);
+
+        preparedStatement.executeUpdate();
+
         preparedStatement.close();
+
+        // Apply the charge to the budget and the accounts if it
+        // is not income.
+//            applyChargeToAccount(theCat, theAccId, theAmount);
+//            applyChargeToBudget(theCat, theAmount);
+        // close things out
 
     }
 
@@ -512,7 +566,7 @@ public class DataBaseTools {
      * @param theId : The ID to be checked for updating.
      * @param theCharge : The new account charge.
      */
-    public void applyChargeToAccount(Integer theId, Double theCharge) {
+    public void applyChargeToAccount(String theType, Integer theId, Double theCharge) {
         // Get the current balance in that account
         Double balance = 0.0;
         try {
@@ -524,9 +578,13 @@ public class DataBaseTools {
         String sql = "UPDATE accounts SET balance = ? WHERE itemId = ?";
         preparedStatement = manageConnection(sql);
         try {
-            preparedStatement.setDouble(1, balance - theCharge);
-            preparedStatement.setDouble(2, theId);
-
+            if (!theType.equals("income")) {
+                preparedStatement.setDouble(1, balance - theCharge);
+                preparedStatement.setDouble(2, theId);
+            } else {
+                preparedStatement.setDouble(1, balance + theCharge);
+                preparedStatement.setDouble(2, theId);
+            }
             // Do the update
             preparedStatement.executeUpdate();
 
@@ -688,6 +746,54 @@ public class DataBaseTools {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public Double getMyAllIncome() {
+        return myAllIncome;
+    }
+
+    public Double getMyAllExpenses() {
+        return myAllExpenses;
+    }
+
+    public Double getMyTotalCurrentBudgetAmount() {
+        return myTotalCurrentBudgetAmount;
+    }
+
+    public Double getMyBudgetAmount() {
+        return myBudgetAmount;
+    }
+
+    public Double getMyTotalMonthlyExpenses() {
+        return myTotalMonthlyExpenses;
+    }
+
+    public Double getMyTotalMonthlyIncome() {
+        return myTotalMonthlyIncome;
+    }
+
+    public Double getMyTotalPeriodOneIncome() {
+        return myTotalPeriodOneIncome;
+    }
+
+    public Double getMyTotalPeriodTwoIncome() {
+        return myTotalPeriodTwoIncome;
+    }
+
+    public Double getMyTotalPeriodOneSpending() {
+        return myTotalPeriodOneSpending;
+    }
+
+    public Double getMyTotalPeriodTwoSpending() {
+        return myTotalPeriodTwoSpending;
+    }
+
+    public Integer getMyCurrentPeriod() {
+        return myCurrentPeriod;
+    }
+
+    public Double getMyCashItems() {
+        return myCashItems;
     }
 
 }

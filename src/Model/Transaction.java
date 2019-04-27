@@ -268,7 +268,6 @@ public class Transaction {
     public void insertTransactionInDb() {
         String sql = "INSERT INTO transactions (dateOfTransaction, purchaser, vendor, description, category, amount, accountBalance, accountID) VALUES (?,?,?,?,?,?,?,?)";
         DataBaseTools dbTools = new DataBaseTools();
-        System.out.println(myTransactionId);
         try {
             dbTools.InsertTransactionInDb(sql, myTransactionDate, myPurchaser, myVendor, myDescription, myCategory, myAmount, myBalanceAfter, myAccountFrom);
         } catch (SQLException e) {
