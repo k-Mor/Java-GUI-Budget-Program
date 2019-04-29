@@ -4,11 +4,9 @@
 package controller;
 
 import Model.Account;
-import Model.AscendingOrder;
 import Model.DataBaseTools;
 import Model.Transaction;
 import animatefx.animation.FadeIn;
-import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import view.ControllerInterface;
 import view.SceneChanger;
 
 import java.net.URL;
@@ -24,7 +21,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -33,7 +29,7 @@ import java.util.*;
  * @author : Kaleb
  * @version : 2019-04-10
  */
-public class NewTransactionViewController implements Initializable, AscendingOrder<Transaction> {
+public class NewTransactionViewController implements Initializable {
 
     /**
      * This is the actual transaction object that is captured when
@@ -65,7 +61,7 @@ public class NewTransactionViewController implements Initializable, AscendingOrd
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
-        myTransactionList = new LinkedList<>();
+        myTransactionList = new ArrayList<>();
         DataBaseTools dbTools = new DataBaseTools();
         try {
             ObservableList<Account> accounts = dbTools.getTheAccounts();
@@ -105,29 +101,16 @@ public class NewTransactionViewController implements Initializable, AscendingOrd
      */
     public void commitButtonPushed() {
         int cnt = 0;
-        for (Transaction trans: myTransactionList) {
-            if (compareTo(trans) < 0) {
-                trans.insertTransactionInDb();
-            } else if (compareTo(trans) > 0) {
 
-            }
+        for (int i = 0; i <= myTransactionList.size() - 1; i++) {
+            Transaction trans = myTransactionList.get(i);
+            System.out.println(trans);
+            System.out.println(cnt);
+            trans.insertTransactionInDb();
             cnt++;
-            myLbl.setText(cnt + " Charges committed out of: " + myTransactionList.size());
         }
-    }
-
-    /**
-     *
-     * @param trans
-     * @return
-     */
-    public int compareTo(Transaction trans) {
-        if (myTransaction.getMyTransactionId() < trans.getMyTransactionId()) {
-            return -1;
-        } else if (myTransaction.getMyTransactionId() > trans.getMyTransactionId()){
-            return 1;
-        }
-        return 0;
+        myTransactionList.clear();
+        myLbl.setText(cnt + " Charges committed out of: " + myTransactionList.size());
     }
 
     /**

@@ -71,7 +71,9 @@ public class Transaction {
      * @param theAmount : The amount.
      * @param theBalanceAfter : The remaining balance in the account after the transaction.
      */
-    public Transaction(LocalDate theTransactionDate, String thePurchaser, String theVendor, String theDescription, String theCategory, Double theAmount, Double theBalanceAfter, Integer theAccountFrom) {
+    public Transaction(LocalDate theTransactionDate, String thePurchaser, String theVendor, String theDescription,
+                       String theCategory, Double theAmount, Double theBalanceAfter, Integer theAccountFrom) {
+
         setMyTransactionDate(theTransactionDate);
         setMyPurchaser(thePurchaser);
         setMyVendor(theVendor);

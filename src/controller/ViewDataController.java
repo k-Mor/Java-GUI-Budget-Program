@@ -160,7 +160,7 @@ public class ViewDataController implements Initializable {
         DataBaseTools dbTools = new DataBaseTools();
 
         // Set the transactions up
-        String sql = "SELECT * FROM transactions";
+        String sql = "SELECT * FROM transactions ORDER BY dateOfTransaction, itemId";
         setTheTransactionTable(dbTools, sql);
 
         // set the budget up

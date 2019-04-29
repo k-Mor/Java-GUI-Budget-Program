@@ -3,11 +3,16 @@
  */
 package Model;
 
+import javafx.beans.binding.ObjectExpression;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The purpose of this class is to house all of the methods
@@ -106,7 +111,7 @@ public class DataBaseTools {
             preparedStatement = connection.prepareStatement(theSql);
 
         } catch (SQLException e) {
-            System.err.println(e.getMessage() + "POOP");
+            System.err.println(e.getMessage());
         }
         return preparedStatement;
     }
@@ -392,7 +397,7 @@ public class DataBaseTools {
                         myCashItems += newBudget.getMyCurrentValue();
                     }
                 }
-                // Get the totals for the constants
+                // Get the totals for the fields
                 myTotalCurrentBudgetAmount += newBudget.getMyCurrentValue();
                 myBudgetAmount += newBudget.getMyBudgetedValue();
                 if (!newBudget.getMyItemName().equals("medical & dental")) {
@@ -501,6 +506,37 @@ public class DataBaseTools {
     }
 
     /**
+     *
+     */
+    public void insertList(String sql, List<Transaction> theList) {
+        PreparedStatement preparedStatement = null;
+        Collections.reverse(theList);
+        preparedStatement = manageConnection(sql);
+
+
+
+        try {
+            for (Transaction trans: theList) {
+                Date date = Date.valueOf(trans.getMyTransactionDate());
+                preparedStatement.setDate(1, date);
+                preparedStatement.setString(2, trans.getMyPurchaser());
+                preparedStatement.setString(3, trans.getMyVendor());
+                preparedStatement.setString(4, trans.getMyDescription());
+                preparedStatement.setString(5, trans.getMyCategory());
+                preparedStatement.setDouble(6, trans.getMyAmount());
+                preparedStatement.setDouble(7, trans.getMyBalanceAfter());
+                preparedStatement.setInt(8, trans.getMyAccountFrom());
+                // Enter the transaction
+//                preparedStatement.execute();
+                System.out.println(theList);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
      * This method is responsible for handling insertion into the db.
      *
      * @param sql : This is the sql to be screened.
@@ -537,18 +573,18 @@ public class DataBaseTools {
         preparedStatement.execute();
 
         // Do the account update
-        preparedStatement = manageConnection("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
-        preparedStatement.setDouble(1, theAmount);
-        preparedStatement.setInt(2,theAccId);
-
-        preparedStatement.executeUpdate();
-
-
-        preparedStatement = manageConnection("UPDATE budget SET currentValue = ? WHERE itemName = ?");
-        preparedStatement.setDouble(1, getBudgetItemValue(theCat) - theAmount);
-        preparedStatement.setString(2,theCat);
-
-        preparedStatement.executeUpdate();
+//        preparedStatement = manageConnection("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
+//        preparedStatement.setDouble(1, theAmount);
+//        preparedStatement.setInt(2,theAccId);
+//
+//        preparedStatement.executeUpdate();
+//
+//
+//        preparedStatement = manageConnection("UPDATE budget SET currentValue = ? WHERE itemName = ?");
+//        preparedStatement.setDouble(1, getBudgetItemValue(theCat) - theAmount);
+//        preparedStatement.setString(2,theCat);
+//
+//        preparedStatement.executeUpdate();
 
         preparedStatement.close();
 
