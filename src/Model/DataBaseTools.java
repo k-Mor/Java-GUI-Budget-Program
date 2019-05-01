@@ -506,17 +506,27 @@ public class DataBaseTools {
     }
 
     /**
+     * This method is responsible for adding transactions into the database.
      *
+     * @param sql : This is some sql passed to it.
+     * @param theList : This is the list to be added.
      */
     public void insertList(String sql, List<Transaction> theList) {
         PreparedStatement preparedStatement = null;
-        Collections.reverse(theList);
-        preparedStatement = manageConnection(sql);
 
+        Connection connection = null;
+
+        try {
+            // Get the connection
+            connection = DriverManager.getConnection("jdbc:mysql://162.241.219.194/kalebsc1_MyBlueDataBase", "kalebsc1_theBoss", "Cassandra1$");
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
 
 
         try {
             for (Transaction trans: theList) {
+                preparedStatement = connection.prepareStatement(sql);
                 Date date = Date.valueOf(trans.getMyTransactionDate());
                 preparedStatement.setDate(1, date);
                 preparedStatement.setString(2, trans.getMyPurchaser());
@@ -527,73 +537,25 @@ public class DataBaseTools {
                 preparedStatement.setDouble(7, trans.getMyBalanceAfter());
                 preparedStatement.setInt(8, trans.getMyAccountFrom());
                 // Enter the transaction
-//                preparedStatement.execute();
-                System.out.println(theList);
-            }
+                preparedStatement.execute();
 
+                // account update
+                preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
+                preparedStatement.setDouble(1, trans.getMyAmount());
+                preparedStatement.setInt(2,trans.getMyAccountFrom());
+
+                preparedStatement.executeUpdate();
+
+//                // budget update
+                preparedStatement = connection.prepareStatement("UPDATE budget SET currentValue = ? WHERE itemName = ?");
+                preparedStatement.setDouble(1, getBudgetItemValue(trans.getMyCategory()) - trans.getMyAmount());
+                preparedStatement.setString(2, trans.getMyCategory());
+//
+                preparedStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    /**
-     * This method is responsible for handling insertion into the db.
-     *
-     * @param sql : This is the sql to be screened.
-     * @param theDate : This is the date to be added.
-     * @param theP : This is the purchaser to be added.
-     * @param theV : This is the vendor to be added.
-     * @param theDesc : This is a description for the charge.
-     * @param theCat : This is the category that the charge falls in.
-     * @param theAmount : This is the amount that the charge is for.
-     * @param theBal : This is the account balance after the charge.
-     * @param theAccId : This is which account the charge will be applied to.
-     * @throws SQLException : In the event that something goes wrong.
-     */
-    public void InsertTransactionInDb(String sql, LocalDate theDate, String theP, String theV, String theDesc, String theCat, Double theAmount, Double theBal, Integer theAccId) throws SQLException{
-        PreparedStatement preparedStatement = null;
-
-        preparedStatement = manageConnection(sql);
-
-        Date date = Date.valueOf(theDate);
-
-        if (theCat.equals("income")) {
-            theBal = theBal + theAmount;
-        }
-        preparedStatement.setDate(1, date);
-        preparedStatement.setString(2, theP);
-        preparedStatement.setString(3, theV);
-        preparedStatement.setString(4, theDesc);
-        preparedStatement.setString(5, theCat);
-        preparedStatement.setDouble(6, theAmount);
-        preparedStatement.setDouble(7, theBal);
-        preparedStatement.setDouble(8, theAccId);
-
-        // Enter the transaction
-        preparedStatement.execute();
-
-        // Do the account update
-//        preparedStatement = manageConnection("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
-//        preparedStatement.setDouble(1, theAmount);
-//        preparedStatement.setInt(2,theAccId);
-//
-//        preparedStatement.executeUpdate();
-//
-//
-//        preparedStatement = manageConnection("UPDATE budget SET currentValue = ? WHERE itemName = ?");
-//        preparedStatement.setDouble(1, getBudgetItemValue(theCat) - theAmount);
-//        preparedStatement.setString(2,theCat);
-//
-//        preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-
-        // Apply the charge to the budget and the accounts if it
-        // is not income.
-//            applyChargeToAccount(theCat, theAccId, theAmount);
-//            applyChargeToBudget(theCat, theAmount);
-        // close things out
-
     }
 
     /**

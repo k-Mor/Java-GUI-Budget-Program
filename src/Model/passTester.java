@@ -21,16 +21,16 @@ public class passTester {
         ArrayList<Transaction> holder = new ArrayList<>();
 
         Transaction newTrans = new Transaction(LocalDate.now(), "1",
-                "test", "test", "test", 0.0,
+                "test", "test", "other", 0.0,
                 100.0, 1);
         Transaction newTrans2 = new Transaction(LocalDate.now(), "2",
-                "test", "test", "test", 0.0,
+                "test", "test", "other", 0.0,
                 100.0, 2);
         Transaction newTrans3 = new Transaction(LocalDate.now(), "3",
-                "test", "test", "test", 0.0,
+                "test", "test", "other", 0.0,
                 100.0, 3);
         Transaction newTrans4 = new Transaction(LocalDate.now(), "4",
-                "test", "test", "test", 0.0,
+                "test", "test", "other", 0.0,
                 100.0, 4);
 
         holder.add(newTrans);

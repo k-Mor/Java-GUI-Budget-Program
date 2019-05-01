@@ -100,17 +100,15 @@ public class NewTransactionViewController implements Initializable {
      *
      */
     public void commitButtonPushed() {
-        int cnt = 0;
+        String sql = "INSERT INTO transactions (dateOfTransaction, " +
+                "purchaser, vendor, description, category, amount, " +
+                "accountBalance, accountID) VALUES (?,?,?,?,?,?,?,?)";
+        DataBaseTools dbTools = new DataBaseTools();
+        dbTools.insertList(sql, myTransactionList);
 
-        for (int i = 0; i <= myTransactionList.size() - 1; i++) {
-            Transaction trans = myTransactionList.get(i);
-            System.out.println(trans);
-            System.out.println(cnt);
-            trans.insertTransactionInDb();
-            cnt++;
-        }
+
+        myLbl.setText(myTransactionList.size() + " Charges committed!");
         myTransactionList.clear();
-        myLbl.setText(cnt + " Charges committed out of: " + myTransactionList.size());
     }
 
     /**
