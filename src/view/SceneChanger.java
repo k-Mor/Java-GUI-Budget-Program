@@ -4,7 +4,7 @@
 package view;
 
 import Model.Transaction;
-import animatefx.animation.FadeInDown;
+import animatefx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;

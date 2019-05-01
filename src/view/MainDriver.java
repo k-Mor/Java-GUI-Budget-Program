@@ -3,7 +3,7 @@
  */
 package view;
 
-import animatefx.animation.FadeInDown;
+import animatefx.animation.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -62,6 +62,6 @@ public class MainDriver extends Application {
         thePrimaryStage.show();
 
         // This makes the initial sign in menu animated
-        new FadeInDown(root).play();
+        new FadeIn(root).play();
     }
 }

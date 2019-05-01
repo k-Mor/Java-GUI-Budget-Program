@@ -21,11 +21,10 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InputDataController">
    <right>
-      <VBox alignment="TOP_CENTER" spacing="25.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefWidth="325.0" spacing="25.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
          <children>
             <Text fx:id="date" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="2019-04-25" />
             <Text fx:id="time" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="signUpPageMainLabels" text="12:45" />
-            <VBox />
          </children>
          <padding>
             <Insets left="10.0" right="10.0" top="10.0" />
@@ -35,13 +34,20 @@
       <HBox prefHeight="0.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" styleClass="backgroundPrimary">
          <children>
-            <Button fx:id="myInputTransactions" layoutX="102.0" layoutY="129.0" mnemonicParsing="false" onAction="#inputTransactionButtonPushed" styleClass="homePageMainButtons" text="Input Transaction" />
-            <Button fx:id="myCreateBudgetItem" layoutX="511.0" layoutY="129.0" mnemonicParsing="false" onAction="#createBudgetItemButtonPushed" styleClass="homePageMainButtons" text="Create a budget item" />
-            <Button fx:id="myCreateAccount" layoutX="98.0" layoutY="353.0" mnemonicParsing="false" onAction="#createAccountButtonPushed" styleClass="homePageMainButtons" text="Create an Account" />
-            <Button fx:id="myGoBack" layoutX="569.0" layoutY="353.0" mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
+            <VBox alignment="CENTER" spacing="100.0">
+               <children>
+                  <Button fx:id="myInputTransactions" mnemonicParsing="false" onAction="#inputTransactionButtonPushed" styleClass="homePageMainButtons" text="Input Transaction" />
+                  <Button fx:id="myCreateBudgetItem" mnemonicParsing="false" onAction="#createBudgetItemButtonPushed" styleClass="homePageMainButtons" text="Create a budget item" />
+                  <Button fx:id="myCreateAccount" mnemonicParsing="false" onAction="#createAccountButtonPushed" styleClass="homePageMainButtons" text="Create an Account" />
+                  <Button fx:id="myGoBack" mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="homePageMainButtons" text="Go Back" />
+               </children>
+            </VBox>
          </children>
-      </AnchorPane>
+      </VBox>
    </center>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="325.0" styleClass="backgroundSecondary" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>

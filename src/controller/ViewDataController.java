@@ -51,6 +51,12 @@ public class ViewDataController implements Initializable {
      * The edit button DELETES.
      */
     @FXML private Button myDeleteBtn;
+
+    /**
+     *
+     */
+    @FXML private Button myLoadTransactionsButton;
+
     /**
      *
      */
@@ -159,10 +165,6 @@ public class ViewDataController implements Initializable {
         // Get an instance of the dbTools
         DataBaseTools dbTools = new DataBaseTools();
 
-        // Set the transactions up
-        String sql = "SELECT * FROM transactions ORDER BY dateOfTransaction, itemId";
-        setTheTransactionTable(dbTools, sql);
-
         // set the budget up
         setTheBudgetTable(dbTools);
 
@@ -195,6 +197,16 @@ public class ViewDataController implements Initializable {
 
     }
 
+    /**
+     *
+     * @param theEvent
+     */
+    public void loadTransactionsButtonPushed(ActionEvent theEvent) {
+        DataBaseTools dbTools = new DataBaseTools();
+        // Set the transactions up
+        String sql = "SELECT * FROM transactions ORDER BY dateOfTransaction DESC, itemId";
+        setTheTransactionTable(dbTools, sql);
+    }
     /**
      *
      */

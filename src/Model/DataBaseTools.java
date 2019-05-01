@@ -511,7 +511,7 @@ public class DataBaseTools {
      * @param sql : This is some sql passed to it.
      * @param theList : This is the list to be added.
      */
-    public void insertList(String sql, List<Transaction> theList) {
+    public void insertTransactionList(String sql, List<Transaction> theList) {
         PreparedStatement preparedStatement = null;
 
         Connection connection = null;
@@ -540,9 +540,14 @@ public class DataBaseTools {
                 preparedStatement.execute();
 
                 // account update
-                preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
-                preparedStatement.setDouble(1, trans.getMyAmount());
-                preparedStatement.setInt(2,trans.getMyAccountFrom());
+                if (trans.getMyCategory().equals("income") ||
+                        trans.getMyCategory().equals("paycheck") || trans.getMyCategory().equals("deposit")) {
+                    preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = balance + ? WHERE itemId = ?");
+                } else {
+                    preparedStatement = connection.prepareStatement("UPDATE accounts SET balance = balance - ? WHERE itemId = ?");
+                    preparedStatement.setDouble(1, trans.getMyAmount());
+                    preparedStatement.setInt(2,trans.getMyAccountFrom());
+                }
 
                 preparedStatement.executeUpdate();
 
@@ -553,69 +558,6 @@ public class DataBaseTools {
 //
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * This method updates the account information in the database.
-     *
-     * @param theId : The ID to be checked for updating.
-     * @param theCharge : The new account charge.
-     */
-    public void applyChargeToAccount(String theType, Integer theId, Double theCharge) {
-        // Get the current balance in that account
-        Double balance = 0.0;
-        try {
-            balance = getCurrentAccountBalance(theId);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        PreparedStatement preparedStatement = null;
-        String sql = "UPDATE accounts SET balance = ? WHERE itemId = ?";
-        preparedStatement = manageConnection(sql);
-        try {
-            if (!theType.equals("income")) {
-                preparedStatement.setDouble(1, balance - theCharge);
-                preparedStatement.setDouble(2, theId);
-            } else {
-                preparedStatement.setDouble(1, balance + theCharge);
-                preparedStatement.setDouble(2, theId);
-            }
-            // Do the update
-            preparedStatement.executeUpdate();
-
-            // Close things out
-            preparedStatement.close();
-
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * This method updates the account information in the database.
-     *
-     * @param  theCategory: The ID to be checked for updating.
-     * @param theCharge : The new account charge.
-     */
-    public void applyChargeToBudget(String theCategory, Double theCharge) {
-        // Get the current balance in that account
-        Double currentValue = getBudgetItemValue(theCategory);
-
-        PreparedStatement preparedStatement = null;
-        String sql = "UPDATE budget SET currentValue = ? WHERE itemName = ?";
-        preparedStatement = manageConnection(sql);
-        try {
-            preparedStatement.setDouble(1, currentValue - theCharge);
-            preparedStatement.setString(2, theCategory);
-
-            preparedStatement.execute();
-
-            // Close things out
-            preparedStatement.close();
-
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }

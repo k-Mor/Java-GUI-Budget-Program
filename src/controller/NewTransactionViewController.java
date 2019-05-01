@@ -104,7 +104,7 @@ public class NewTransactionViewController implements Initializable {
                 "purchaser, vendor, description, category, amount, " +
                 "accountBalance, accountID) VALUES (?,?,?,?,?,?,?,?)";
         DataBaseTools dbTools = new DataBaseTools();
-        dbTools.insertList(sql, myTransactionList);
+        dbTools.insertTransactionList(sql, myTransactionList);
 
 
         myLbl.setText(myTransactionList.size() + " Charges committed!");
