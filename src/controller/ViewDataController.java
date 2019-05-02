@@ -55,6 +55,11 @@ public class ViewDataController implements Initializable {
     /**
      *
      */
+    @FXML private Label myTotalSearchedAmount;
+
+    /**
+     *
+     */
     @FXML private Button myLoadTransactionsButton;
 
     /**
@@ -161,6 +166,9 @@ public class ViewDataController implements Initializable {
      */
     @Override
     public void initialize(URL theUrl, ResourceBundle theRb) {
+        // Set the transaction total in the search tab to 0
+        myTotalSearchedAmount.setText("$0.00");
+
         mySelectedTab = myTransactionsTab;
         // Get an instance of the dbTools
         DataBaseTools dbTools = new DataBaseTools();
@@ -417,10 +425,10 @@ public class ViewDataController implements Initializable {
             sql = "SELECT * FROM transactions WHERE dateOfTransaction ='" + date + "'";
         } else if (value == "Search Transactions by Purchaser") {
             // Handling the purchaser
-            sql = "SELECT * FROM transactions WHERE purchaser ='" + myKeyword.getText() + "'";
+            sql = "SELECT * FROM transactions WHERE purchaser LIKE'%" + myKeyword.getText() + "%'";
         } else if (value == "Search Transactions by Vendor") {
             // Handling the Vendor
-            sql = "SELECT * FROM transactions WHERE vendor ='" + myKeyword.getText() + "'";
+            sql = "SELECT * FROM transactions WHERE vendor LIKE'%" + myKeyword.getText() + "%'";
         } else if (value == "Search Transactions by Category") {
             // Handling the category
             sql = "SELECT * FROM transactions WHERE category ='" + myKeyword.getText() + "'";
@@ -433,7 +441,12 @@ public class ViewDataController implements Initializable {
         } else if (value == "Search Transactions by Description"){
             sql = "SELECT * FROM transactions WHERE description LIKE '%" + myKeyword.getText() + "%'";
         }
-        setTheTransactionTable(dbTools, sql);
+        try {
+            setTheTransactionTable(dbTools, sql);
+            myTotalSearchedAmount.setText(String.format("$%,.2f", dbTools.getTransactionAmount(sql)));
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**

@@ -41,8 +41,7 @@
                               <ChoiceBox fx:id="myChoiceBox" layoutX="178.0" layoutY="25.0" prefWidth="150.0" styleClass="LogInPageButtons" />
                               <ToggleButton layoutX="354.0" layoutY="25.0" mnemonicParsing="false" styleClass="LogInPageButtons" text="Keep Items" />
                               <Label layoutX="476.0" layoutY="22.0" styleClass="LogInLabels" text="Total:" />
-                              <Label layoutX="476.0" layoutY="73.0" styleClass="LogInLabels" />
-                              <Label layoutX="476.0" layoutY="73.0" styleClass="LogInLabels" />
+                              <Label fx:id="myTotalSearchedAmount" layoutX="589.0" layoutY="22.0" styleClass="LogInLabels" text="\$0.00" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

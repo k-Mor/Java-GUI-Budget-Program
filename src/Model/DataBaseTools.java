@@ -204,6 +204,31 @@ public class DataBaseTools {
     }
 
     /**
+     * This method queries the remote MySQL database and retrieves the account balance.
+     *
+     * @throws SQLException : In the event that something goes wrong.
+     * @return : double which is a representation of the account balance in the db.
+     */
+    public Double getTransactionAmount(String sql) throws SQLException{
+//        sql = "SELECT * FROM transactions";
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+        Double returnResult = 0.0;
+        preparedStatement = manageConnection(sql);
+        result = preparedStatement.executeQuery();
+
+
+        while (result.next()) {
+            returnResult += Math.abs(result.getDouble("amount"));
+        }
+        // close things out
+        preparedStatement.close();
+        result.close();
+
+        return returnResult;
+    }
+
+    /**
      * This method queries the remote MySQL database and retrieves the account type.
      *
      * @throws SQLException : In the event that something goes wrong.
@@ -552,8 +577,8 @@ public class DataBaseTools {
                 preparedStatement.executeUpdate();
 
 //                // budget update
-                preparedStatement = connection.prepareStatement("UPDATE budget SET currentValue = ? WHERE itemName = ?");
-                preparedStatement.setDouble(1, getBudgetItemValue(trans.getMyCategory()) - trans.getMyAmount());
+                preparedStatement = connection.prepareStatement("UPDATE budget SET currentValue = currentValue - ? WHERE itemName = ?");
+                preparedStatement.setDouble(1, trans.getMyAmount());
                 preparedStatement.setString(2, trans.getMyCategory());
 //
                 preparedStatement.executeUpdate();
