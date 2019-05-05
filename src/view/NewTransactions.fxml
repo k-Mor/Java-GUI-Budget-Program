@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" styleClass="backgroundPrimary" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NewTransactionViewController">
+   <children>
+      <HBox alignment="BOTTOM_CENTER" layoutX="218.0" layoutY="120.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" spacing="60.0">
+               <children>
+                  <Label styleClass="signUpPageMainLabels" text="Date of Transaction:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Purchaser:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Vendor:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Description:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Category:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Amount:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="signUpPageMainLabels" text="Account:">
+                     <font>
+                        <Font name="Raleway Thin" size="36.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#commitButtonPushed" styleClass="LogInPageButtons" text="Commit">
+                     <font>
+                        <Font name="Raleway Thin" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" top="75.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" fillWidth="false" minWidth="-Infinity" prefWidth="300.0" spacing="10.0" styleClass="backgroundSecondary">
+               <children>
+                  <VBox alignment="CENTER" prefWidth="200.0" spacing="65.0">
+                     <children>
+                        <TextField fx:id="myTransactionDate" prefHeight="23.0" prefWidth="200.0" promptText="Change the date" styleClass="borderRadius" />
+                        <TextField fx:id="myPurchaser" prefHeight="23.0" prefWidth="200.0" promptText="Change the purchaser" styleClass="borderRadius" />
+                        <TextField fx:id="myVendor" prefHeight="23.0" prefWidth="200.0" promptText="Change the vendor" styleClass="borderRadius" />
+                        <TextField fx:id="myDescription" prefHeight="23.0" prefWidth="200.0" promptText="Change the description" styleClass="borderRadius" />
+                        <TextField fx:id="myCategory" prefHeight="23.0" prefWidth="200.0" promptText="Change the category" styleClass="borderRadius" />
+                        <TextField fx:id="myAmount" prefHeight="23.0" prefWidth="200.0" promptText="Change the amount" styleClass="borderRadius" />
+                        <ChoiceBox fx:id="myFromAccount" prefWidth="150.0" />
+                     </children>
+                  </VBox>
+                  <Label fx:id="myLbl" styleClass="errMessages" text="Label" />
+                  <HBox alignment="CENTER" prefHeight="100.0" spacing="25.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#saveButtonPushed" styleClass="LogInPageButtons" text="Save Transaction">
+                           <font>
+                              <Font name="Raleway Thin" size="12.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#goBackButtonPushed" styleClass="LogInPageButtons" text="Go Back">
+                           <font>
+                              <Font name="Raleway Thin" size="12.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets top="100.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
