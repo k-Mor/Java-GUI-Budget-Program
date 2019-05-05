@@ -423,7 +423,7 @@ public class DataBaseTools {
                     }
                 }
                 // Get the totals for the fields
-                myTotalCurrentBudgetAmount += newBudget.getMyCurrentValue();
+                myTotalCurrentBudgetAmount += Math.abs(newBudget.getMyCurrentValue());
                 myBudgetAmount += newBudget.getMyBudgetedValue();
                 if (!newBudget.getMyItemName().equals("medical & dental")) {
                     myTotalMonthlyExpenses += newBudget.getMyExpectedMonthly();
