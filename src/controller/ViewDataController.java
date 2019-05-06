@@ -30,6 +30,11 @@ public class ViewDataController implements Initializable {
     /**
      *
      */
+    private DataBaseTools myDbTools;
+
+    /**
+     *
+     */
     private Tab mySelectedTab;
 
     /**
@@ -71,6 +76,10 @@ public class ViewDataController implements Initializable {
      * These are the search options in the search tab.
      */
     @FXML private ChoiceBox<String> myChoiceBox;
+
+    /**
+     *
+     */
     @FXML private TextField myKeyword;
 
     /**
@@ -169,18 +178,31 @@ public class ViewDataController implements Initializable {
         // Set the transaction total in the search tab to 0
         myTotalSearchedAmount.setText("$0.00");
 
+        // Set the tab starting position
         mySelectedTab = myTransactionsTab;
+
         // Get an instance of the dbTools
         DataBaseTools dbTools = new DataBaseTools();
 
+        // Populate the fields in the dbMethods class
+        try {
+            String sql = "SELECT * FROM transactions ORDER BY itemId DESC";
+            dbTools.getTheTransactionList(sql);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        // Assign the instance
+        myDbTools = dbTools;
+
         // set the budget up
-        setTheBudgetTable(dbTools);
+        setTheBudgetTable(myDbTools);
 
         // Set up insights
-        populateTheInsightTab(dbTools);
+        populateTheInsightTab(myDbTools);
 
         // Set the accounts up
-        setTheAccountTable(dbTools);
+        setTheAccountTable(myDbTools);
 
         // set the time and date
         OtherTools ot = new OtherTools();
@@ -210,10 +232,9 @@ public class ViewDataController implements Initializable {
      * @param theEvent
      */
     public void loadTransactionsButtonPushed(ActionEvent theEvent) {
-        DataBaseTools dbTools = new DataBaseTools();
         // Set the transactions up
-        String sql = "SELECT * FROM transactions ORDER BY dateOfTransaction DESC, itemId";
-        setTheTransactionTable(dbTools, sql);
+        String sql = "SELECT * FROM transactions ORDER BY itemId DESC";
+        setTheTransactionTable(myDbTools, sql);
     }
     /**
      *
@@ -262,8 +283,8 @@ public class ViewDataController implements Initializable {
         }
         // Monthly expenses Vs. Income
         myMonthlyVs.setText(String.format("$%,2.2f", totalMonthlyIncome - totalMonthlyValue));
-        //See the savings
 
+        //See the savings
         if (savings < 0.0) {
             savings = 0.0;
         }
@@ -413,7 +434,6 @@ public class ViewDataController implements Initializable {
     }
 
     public void searchButtonPushed(ActionEvent theEvent) {
-        DataBaseTools dbTools = new DataBaseTools();
         mySelectedTab = mySearchTab;
         String value = myChoiceBox.getValue();
         mySearchTable.getItems().clear();
@@ -442,8 +462,8 @@ public class ViewDataController implements Initializable {
             sql = "SELECT * FROM transactions WHERE description LIKE '%" + myKeyword.getText() + "%'";
         }
         try {
-            setTheTransactionTable(dbTools, sql);
-            myTotalSearchedAmount.setText(String.format("$%,.2f", dbTools.getTransactionAmount(sql)));
+            setTheTransactionTable(myDbTools, sql);
+            myTotalSearchedAmount.setText(String.format("$%,.2f", myDbTools.getTransactionAmount(sql)));
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -456,33 +476,32 @@ public class ViewDataController implements Initializable {
      * @param theEvent : This is the event.
      */
     public void deleteButtonPushed(ActionEvent theEvent) {
-        DataBaseTools dbTools = new DataBaseTools();
-
         // Figure out which tab you are on.
         if (mySelectedTab.equals(myTransactionsTab)) {
             Integer transaction = myTransactionTable.getSelectionModel().getSelectedItem().getMyTransactionId();
-            dbTools.deleteFromDb(transaction, "transactions", "itemId");
+            myDbTools.deleteFromDb(transaction, "transactions", "itemId");
 
             //Reset
+            myTransactionTable.getItems().clear();
             String sql = "SELECT * FROM transactions";
-            setTheTransactionTable(dbTools, sql);
+            setTheTransactionTable(myDbTools, sql);
 
         } else if (mySelectedTab.equals(myBudgetTab)) {
             Integer selectedBudgetItem = myBudgetTable.getSelectionModel().getSelectedItem().getMyItemId();
-            dbTools.deleteFromDb(selectedBudgetItem, "budget", "itemId");
+            myDbTools.deleteFromDb(selectedBudgetItem, "budget", "itemId");
 
             //Reset
             myBudgetTable.getItems().clear();
-            setTheBudgetTable(dbTools);
+            setTheBudgetTable(myDbTools);
 
         } else if (mySelectedTab.equals(myAccountTab)) {
             // This is where everything for the budget view goes.
             Integer selectedAccount = myAccountTable.getSelectionModel().getSelectedItem().getMyAccountId();
-            dbTools.deleteFromDb(selectedAccount, "accounts", "itemId");
+            myDbTools.deleteFromDb(selectedAccount, "accounts", "itemId");
 
             //Reset
             myAccountTable.getItems().clear();
-            setTheAccountTable(dbTools);
+            setTheAccountTable(myDbTools);
         }
     }
 

@@ -30,6 +30,11 @@ import view.SceneChanger;
 public class HomePageController implements Initializable {
 
     /**
+     *
+     */
+    private DataBaseTools myDbTools;
+
+    /**
      * This is the field that displays the
      * current account balance.
      */
@@ -117,6 +122,7 @@ public class HomePageController implements Initializable {
 
         OtherTools otherTools = new OtherTools();
         DataBaseTools dataBaseTools = new DataBaseTools();
+        myDbTools = dataBaseTools;
 
         // Setting the time in the main view
         otherTools.getTheTime(time);
@@ -132,17 +138,17 @@ public class HomePageController implements Initializable {
         Double expenses = 0.0;
         // Set the account balance
         try {
-            double money = dataBaseTools.getCurrentAccountBalance(myChosenAccount);
-            String type = dataBaseTools.getAccountType(myChosenAccount);
+            double money = myDbTools.getCurrentAccountBalance(myChosenAccount);
+            String type = myDbTools.getAccountType(myChosenAccount);
             String currentBalance = String.format("$%,.2f", money);
             moneyDisplay.setText(currentBalance);
             accountTypeLabel.setText(type);
-            dataBaseTools.getTheTransactionList("SELECT * FROM transactions");
-            dataBaseTools.getTheBudget();
-            allIncome = dataBaseTools.getMyAllIncome();
-            allExpenses = dataBaseTools.getMyAllExpenses();
-            currentMonthIncome = dataBaseTools.getMyTotalPeriodOneIncome() + dataBaseTools.getMyTotalPeriodTwoIncome();
-            expenses = Math.abs(dataBaseTools.getMyTotalPeriodOneSpending() + dataBaseTools.getMyTotalPeriodTwoSpending());
+            myDbTools.getTheTransactionList("SELECT * FROM transactions");
+            myDbTools.getTheBudget();
+            allIncome = myDbTools.getMyAllIncome();
+            allExpenses = myDbTools.getMyAllExpenses();
+            currentMonthIncome = myDbTools.getMyTotalPeriodOneIncome() + myDbTools.getMyTotalPeriodTwoIncome();
+            expenses = Math.abs(myDbTools.getMyTotalPeriodOneSpending() + myDbTools.getMyTotalPeriodTwoSpending());
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -212,15 +218,14 @@ public class HomePageController implements Initializable {
         double newBalance;
         String accountType;
         new Flash(accountBalanceLnk).play();
-        DataBaseTools dbTools = new DataBaseTools();
         try {
             if (myChosenAccount < 3) {
                 myChosenAccount += 1;
             } else {
                 myChosenAccount = 1;
             }
-            newBalance = dbTools.getCurrentAccountBalance(myChosenAccount);
-            accountType = dbTools.getAccountType(myChosenAccount);
+            newBalance = myDbTools.getCurrentAccountBalance(myChosenAccount);
+            accountType = myDbTools.getAccountType(myChosenAccount);
             moneyDisplay.setText(String.format("$%,.2f", newBalance));
             accountTypeLabel.setText(accountType);
         } catch (SQLException e) {
